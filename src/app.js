@@ -1,25 +1,36 @@
-const ProductManager = require('./productManager')
+const ProductManager = require('./productManager');
 const fs = require('fs').promises;
-const express = require('express')
+const express = require('express');
 
-const app = express()
+const app = express();
 
-const filename = './Products.json'
-const productManager = new ProductManager(filename);
+const filename = `${__dirname}/../assets/Products.json`;
+const productsManager = new ProductManager(filename);
 
-app.get('/products', async () => {
-    await productManager.getProducts();
+app.get('/products', async (_, res) => {
+    try {
+        const products = await productsManager.getProducts();
+        res.json(products);
+        return;
+    } catch (error) {
+        res.json({ error: 'Error retreiving products.' });
+    }
 });
 
 app.get('/products/:pid', async (req, res) => {
-    const product = await productManager.getProductById(req.params.pid);
+    try {
+        const product = await productsManager.getProductById(req.params.pid);
 
-    if (!product) {
-        res.send({ status: 'ERROR', message: 'Product not found.'});
-        return;
-    };
+        if (!product) {
+            res.json({ status: 'ERROR', message: 'Product not found.' + req.params.pid});
+            return;
+        };
 
-    res.json(product);
+        res.json(product);
+    } catch (error) {
+        res.json({ error: 'Error retrieving product.' + req.params.pid});
+    }
+
 });
 
 app.get('/', (req, res) => {
@@ -31,27 +42,27 @@ app.get('/test', async (_, res) => {
 });
 
 app.get('/file', async (req, res) => {
-    const fileContents = await fs.readFile('./Products.json', 'utf-8');
+    const fileContents = await fs.readFile(`${__dirname}/../assets/Products.json`, 'utf-8');
     res.end(fileContents);
 })
 
 // productManager
 //     .initialize()
 //     .then(() => {
-//         console.log('ProductManager initialized.')
+//         console.log('ProductManager initialized.');
 //         app.listen(3000, () => {
-//             console.log('Server ready!')
-//         })
-//     })
+//             console.log('Server ready!');
+//         });
+//     });
 //     .catch(err => {
-//         console.log('Error initializing server.')
-//         console.error(err)
-//     })
+//         console.log('Error initializing server. + error');
+//         console.error(err);
+//     });
 
 const main = async () => {
 
     try {
-        await productManager.initialize()
+        await productsManager.initialize()
         app.listen(3000, () => {
             console.log('Server ready!')
         })

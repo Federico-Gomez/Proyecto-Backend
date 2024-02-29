@@ -135,67 +135,67 @@ class ProductManager {
 
 // Use case
 
-const main = async () => {
+// const main = async () => {
 
-    try {
-        const manager = new ProductManager('Products.json');
-        await manager.initialize();
-        await manager.addProduct(
-            "Skirt",
-            "Skirt de algodón",
-            52.99,
-            "img/skirt.jpg",
-            "SKT001",
-            100
-        );
-        await manager.addProduct(
-            "Shirt",
-            "Shirt de pima",
-            22.99,
-            "img/shirt.jpg",
-            "SHT001",
-            100
-        );
-        await manager.addProduct(
-            "Medias",
-            "Medias de algodón",
-            1.99,
-            "img/medias.jpg",
-            "MED001",
-            100
-        );
-        await manager.addProduct(
-            "Jean",
-            "Jeans negro",
-            19.99,
-            "img/jeanbl.jpg",
-            "JB007",
-            10
-        );
+//     try {
+//         const manager = new ProductManager(`${__dirname}/../assets/Products.json`); 
+//         await manager.initialize();
+//         await manager.addProduct(
+//             "Skirt",
+//             "Skirt de algodón",
+//             52.99,
+//             "img/skirt.jpg",
+//             "SKT001",
+//             100
+//         );
+//         await manager.addProduct(
+//             "Shirt",
+//             "Shirt de pima",
+//             22.99,
+//             "img/shirt.jpg",
+//             "SHT001",
+//             100
+//         );
+//         await manager.addProduct(
+//             "Medias",
+//             "Medias de algodón",
+//             1.99,
+//             "img/medias.jpg",
+//             "MED001",
+//             100
+//         );
+//         await manager.addProduct(
+//             "Jean",
+//             "Jeans negro",
+//             19.99,
+//             "img/jeanbl.jpg",
+//             "JB007",
+//             10
+//         );
 
-        // Comandos para probar las funcionalidades:
+//         // Comandos para probar las funcionalidades:
 
-         // Obtener todos los productos
-        const products = await manager.getProducts();
-        console.log("All products:", products);
+//          // Obtener todos los productos
+//         // const products = await manager.getProducts();
+//         // console.log("All products:", products);
 
-        // // Obtener un producto por ID
-        // const productById = await manager.getProductById(2); 
-        // console.log("Product by ID:", productById);
+//         // // Obtener un producto por ID
+//         // const productById = await manager.getProductById(2); 
+//         // console.log("Product by ID:", productById);
 
-        // // Actualizar un producto
-        // await manager.updateProduct(1, { price: 19.99 });
-        // console.log("Product updated.");
+//         // // Actualizar un producto
+//         // await manager.updateProduct(1, { price: 19.99 });
+//         // console.log("Product updated.");
 
-        // // Eliminar un producto
-        // await manager.deleteProduct(2);
-        // console.log("Product deleted.");
+//         // // Eliminar un producto
+//         // await manager.deleteProduct(2);
+//         // console.log("Product deleted.");
         
-    } catch (error) {
-        console.log('Error.', error);
-    }
-}
+//     } catch (error) {
+//         console.log('Error.', error);
+//     }
+// }
 
-main();
+// main();
 
 module.exports = ProductManager 
