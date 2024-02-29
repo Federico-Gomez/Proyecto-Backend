@@ -1,0 +1,38 @@
+[
+	{
+		"title": "Skirt",
+		"description": "Skirt de algodón",
+		"price": 52.99,
+		"thumbnail": "img/skirt.jpg",
+		"code": "SKT001",
+		"stock": 100,
+		"id": 1
+	},
+	{
+		"title": "Shirt",
+		"description": "Shirt de pima",
+		"price": 22.99,
+		"thumbnail": "img/shirt.jpg",
+		"code": "SHT001",
+		"stock": 100,
+		"id": 2
+	},
+	{
+		"title": "Medias",
+		"description": "Medias de algodón",
+		"price": 1.99,
+		"thumbnail": "img/medias.jpg",
+		"code": "MED001",
+		"stock": 100,
+		"id": 3
+	},
+	{
+		"title": "Jean",
+		"description": "Jeans negro",
+		"price": 19.99,
+		"thumbnail": "img/jeanbl.jpg",
+		"code": "JB007",
+		"stock": 10,
+		"id": 4
+	}
+]
