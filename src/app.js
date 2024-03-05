@@ -8,6 +8,10 @@ const express = require('express');
 
 const app = express();
 
+app.engine('handlebars', handlebars.engine());
+app.set('views', `${__dirname}/views`);
+app.set('view engine', 'handlebars');
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/static', express.static(`${__dirname}/../public`));
@@ -22,10 +26,13 @@ const productsManager = new ProductManager(productsFilename);
 const cartsFilename = `${__dirname}/../assets/Carts.json`;
 const cartsManager = new CartManager(cartsFilename);
 
-app.get('/products', async (_, res) => {
+app.get('/products', async (req, res) => {
     try {
         const products = await productsManager.getProducts();
-        res.json(products);
+        const limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : undefined;
+        res.json(limit ?
+            products.slice(0, limit)
+            : products);
         return;
     } catch (error) {
         res.status(500).json({ error: 'Error retrieving products.' });
