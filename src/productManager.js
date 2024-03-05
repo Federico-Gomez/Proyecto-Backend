@@ -50,6 +50,7 @@ class ProductManager {
     async getProducts() {
         try {
             const products = await fs.readFile(this.path, 'utf-8');
+            console.log('Products read from file:', products);
             return JSON.parse(products);
         } catch (error) {
             console.error("Error obtaining products:", error);
@@ -198,4 +199,4 @@ class ProductManager {
 
 // main();
 
-module.exports = ProductManager 
+module.exports = ProductManager;

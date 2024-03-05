@@ -1,11 +1,26 @@
 const ProductManager = require('./productManager');
+const CartManager = require('./cartManager');
 const fs = require('fs').promises;
+const productsRouter = require('./routes/products.router');
+const petsRouter = require('./routes/pets.router');
+const cartsRouter = require('./routes/carts.router');
 const express = require('express');
 
 const app = express();
 
-const filename = `${__dirname}/../assets/Products.json`;
-const productsManager = new ProductManager(filename);
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use('/static', express.static(`${__dirname}/../public`));
+
+app.use('/api/products', productsRouter);
+app.use('/api/pets', petsRouter);
+app.use('/api/carts', cartsRouter);
+
+const productsFilename = `${__dirname}/../assets/Products.json`;
+const productsManager = new ProductManager(productsFilename);
+
+const cartsFilename = `${__dirname}/../assets/Carts.json`;
+const cartsManager = new CartManager(cartsFilename);
 
 app.get('/products', async (_, res) => {
     try {
@@ -13,40 +28,37 @@ app.get('/products', async (_, res) => {
         res.json(products);
         return;
     } catch (error) {
-        res.json({ error: 'Error retreiving products.' });
+        res.status(500).json({ error: 'Error retrieving products.' });
     }
 });
 
 app.get('/products/:pid', async (req, res) => {
     try {
-        const product = await productsManager.getProductById(req.params.pid);
+        const product = await productsManager.getProductById(Number.parseInt(req.params.pid));
 
         if (!product) {
-            res.json({ status: 'ERROR', message: 'Product not found.' + req.params.pid});
+            res.json({ status: 'ERROR', message: 'Product not found.' + req.params.pid });
             return;
         };
 
         res.json(product);
     } catch (error) {
-        res.json({ error: 'Error retrieving product.' + req.params.pid});
+        res.status(500).json({ error: 'Error retrieving product.' + req.params.pid });
     }
 
 });
 
-app.get('/', (req, res) => {
-    res.end('Test slash');
-});
-
-app.get('/test', async (_, res) => {
-    res.end('Hi, tester!');
-});
-
-app.get('/file', async (req, res) => {
+app.get('/file', async (_, res) => {
     const fileContents = await fs.readFile(`${__dirname}/../assets/Products.json`, 'utf-8');
     res.end(fileContents);
-})
+});
 
-// productManager
+app.get('/', (_, res) => {
+    res.end('App Test');
+});
+
+// Forma 1
+// productsManager
 //     .initialize()
 //     .then(() => {
 //         console.log('ProductManager initialized.');
@@ -59,16 +71,42 @@ app.get('/file', async (req, res) => {
 //         console.error(err);
 //     });
 
+//Forma2
 const main = async () => {
 
     try {
-        await productsManager.initialize()
-        app.listen(3000, () => {
-            console.log('Server ready!')
-        })
+        await productsManager.initialize();
+        await cartsManager.initialize();
+        await productsManager.addProduct(
+            "Skirt",
+            "Skirt de algodón",
+            52.99,
+            "img/skirt.jpg",
+            "SKT001",
+            100
+        );
+        await productsManager.addProduct(
+            "Shirt",
+            "Shirt de pima",
+            22.99,
+            "img/shirt.jpg",
+            "SHT001",
+            100
+        );
+        await productsManager.addProduct(
+            "Medias",
+            "Medias de algodón",
+            1.99,
+            "img/medias.jpg",
+            "MED001",
+            100
+        );
+        app.listen(8080, () => {
+            console.log('Server ready!');
+        });
     } catch (error) {
-        console.log('Error initializing server.')
+        console.log('Error initializing server.');
     }
 }
 
-main()
+main();
