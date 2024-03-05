@@ -2,7 +2,7 @@ const ProductManager = require('./productManager');
 const CartManager = require('./cartManager');
 const fs = require('fs').promises;
 const productsRouter = require('./routes/products.router');
-const petsRouter = require('./routes/pets.router');
+// const petsRouter = require('./routes/pets.router');
 const cartsRouter = require('./routes/carts.router');
 const express = require('express');
 
@@ -13,7 +13,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/static', express.static(`${__dirname}/../public`));
 
 app.use('/api/products', productsRouter);
-app.use('/api/pets', petsRouter);
+// app.use('/api/pets', petsRouter);
 app.use('/api/carts', cartsRouter);
 
 const productsFilename = `${__dirname}/../assets/Products.json`;
@@ -99,6 +99,62 @@ const main = async () => {
             1.99,
             "img/medias.jpg",
             "MED001",
+            100
+        );
+        await productsManager.addProduct(
+            "Zapatos",
+            "Zapatos de cuero",
+            152.99,
+            "img/zapatos.jpg",
+            "ZPT001",
+            100
+        );
+        await productsManager.addProduct(
+            "Camisa",
+            "Camisa a cuadros",
+            42.99,
+            "img/camisa.jpg",
+            "CMS001",
+            100
+        );
+        await productsManager.addProduct(
+            "Medias",
+            "Medias cortas",
+            0.99,
+            "img/medias_c.jpg",
+            "MEDC001",
+            100
+        );
+        await productsManager.addProduct(
+            "Jeans",
+            "Jeans negro",
+            62.99,
+            "img/jeans_n.jpg",
+            "JNN001",
+            100
+        );
+        await productsManager.addProduct(
+            "Jeans",
+            "Jeans denim",
+            22.99,
+            "img/jeans_d.jpg",
+            "JND001",
+            100
+        );
+        await productsManager.addProduct(
+            "Guantes",
+            "Guantes de algodón",
+            18.99,
+            "img/guantes_a.jpg",
+            "GUA001",
+            100
+        );
+        await productsManager.addProduct(
+            "Guantes",
+            "Guantes de cuero",
+            52.99,
+            "img/guantes_c.jpg",
+            "GUC001",
             100
         );
         app.listen(8080, () => {

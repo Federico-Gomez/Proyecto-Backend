@@ -25,5 +25,68 @@
 		"code": "MED001",
 		"stock": 100,
 		"id": 3
+	},
+	{
+		"title": "Zapatos",
+		"description": "Zapatos de cuero",
+		"price": 152.99,
+		"thumbnail": "img/zapatos.jpg",
+		"code": "ZPT001",
+		"stock": 100,
+		"id": 4
+	},
+	{
+		"title": "Camisa",
+		"description": "Camisa a cuadros",
+		"price": 42.99,
+		"thumbnail": "img/camisa.jpg",
+		"code": "CMS001",
+		"stock": 100,
+		"id": 5
+	},
+	{
+		"title": "Medias",
+		"description": "Medias cortas",
+		"price": 0.99,
+		"thumbnail": "img/medias_c.jpg",
+		"code": "MEDC001",
+		"stock": 100,
+		"id": 6
+	},
+	{
+		"title": "Jeans",
+		"description": "Jeans negro",
+		"price": 62.99,
+		"thumbnail": "img/jeans_n.jpg",
+		"code": "JNN001",
+		"stock": 100,
+		"id": 7
+	},
+	{
+		"title": "Jeans",
+		"description": "Jeans denim",
+		"price": 22.99,
+		"thumbnail": "img/jeans_d.jpg",
+		"code": "JND001",
+		"stock": 100,
+		"id": 8
+	},
+	{
+		"title": "Guantes",
+		"description": "Guantes de algodón",
+		"price": 18.99,
+		"thumbnail": "img/guantes_a.jpg",
+		"code": "GUA001",
+		"stock": 100,
+		"id": 9
+	},
+	{
+		"title": "Guantes",
+		"description": "Guantes de cuero",
+		"price": 52.99,
+		"thumbnail": "img/guantes_c.jpg",
+		"code": "GUC001",
+		"stock": 100,
+		"id": 10
 	}
 ]

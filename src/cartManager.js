@@ -16,23 +16,29 @@ class CartManager {
              console.log('Carts loaded successfully.');
      }
 
-    async createCart(quantity) {
+    async createCart() {
         try {
-
-            const cart = {
-                quantity,
-                id: this.cartIdCounter
+            const carts = await this.readFromFile();
+            const newCart = {
+                id: this.cartIdCounter,
+                products: []
             };
 
-            console.log(this.cartIdCounter);
-            this.#carts.push(cart);
-            this.cartIdCounter++;
-            await this.saveToFile(this.#carts);
-            console.log("Cart created succesfully:", cart);
+            carts.push(newCart);
+            await this.saveToFile(carts);
+            return newCart;
 
         } catch (error) {
             console.error("Error creating Cart:", error);
         }
+    }
+
+    async getCartProducts(cartId) {
+
+    }
+
+    async addProductToCart() {
+        
     }
 
     async getCarts() {
@@ -119,7 +125,6 @@ class CartManager {
             console.error("Error saving file:", error);
         }
     }
-
 }
 
 // Use case
