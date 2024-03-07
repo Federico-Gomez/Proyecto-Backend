@@ -3,90 +3,110 @@
 		"title": "Skirt",
 		"description": "Skirt de algodón",
 		"price": 52.99,
-		"thumbnail": "img/skirt.jpg",
+		"thumbnails": "img/skirt.jpg",
 		"code": "SKT001",
 		"stock": 100,
+		"category": "Apparel",
 		"id": 1
 	},
 	{
 		"title": "Shirt",
 		"description": "Shirt de pima",
 		"price": 22.99,
-		"thumbnail": "img/shirt.jpg",
+		"thumbnails": "img/shirt.jpg",
 		"code": "SHT001",
 		"stock": 100,
+		"category": "Apparel",
 		"id": 2
 	},
 	{
 		"title": "Medias",
 		"description": "Medias de algodón",
 		"price": 1.99,
-		"thumbnail": "img/medias.jpg",
+		"thumbnails": "img/medias.jpg",
 		"code": "MED001",
 		"stock": 100,
+		"category": "Apparel",
 		"id": 3
-	},
-	{
-		"title": "Zapatos",
-		"description": "Zapatos de cuero",
-		"price": 152.99,
-		"thumbnail": "img/zapatos.jpg",
-		"code": "ZPT001",
-		"stock": 100,
-		"id": 4
 	},
 	{
 		"title": "Camisa",
 		"description": "Camisa a cuadros",
 		"price": 42.99,
-		"thumbnail": "img/camisa.jpg",
+		"thumbnails": "img/camisa.jpg",
 		"code": "CMS001",
 		"stock": 100,
+		"category": "Apparel",
 		"id": 5
 	},
 	{
 		"title": "Medias",
 		"description": "Medias cortas",
 		"price": 0.99,
-		"thumbnail": "img/medias_c.jpg",
+		"thumbnails": "img/medias_c.jpg",
 		"code": "MEDC001",
 		"stock": 100,
+		"category": "Apparel",
 		"id": 6
 	},
 	{
 		"title": "Jeans",
 		"description": "Jeans negro",
 		"price": 62.99,
-		"thumbnail": "img/jeans_n.jpg",
+		"thumbnails": "img/jeans_n.jpg",
 		"code": "JNN001",
 		"stock": 100,
+		"category": "Apparel",
 		"id": 7
 	},
 	{
 		"title": "Jeans",
 		"description": "Jeans denim",
 		"price": 22.99,
-		"thumbnail": "img/jeans_d.jpg",
+		"thumbnails": "img/jeans_d.jpg",
 		"code": "JND001",
 		"stock": 100,
+		"category": "Apparel",
 		"id": 8
 	},
 	{
 		"title": "Guantes",
 		"description": "Guantes de algodón",
-		"price": 18.99,
-		"thumbnail": "img/guantes_a.jpg",
+		"price": 1000,
+		"thumbnails": "img/guantes_a.jpg",
 		"code": "GUA001",
 		"stock": 100,
+		"category": "Apparel",
 		"id": 9
 	},
 	{
 		"title": "Guantes",
 		"description": "Guantes de cuero",
 		"price": 52.99,
-		"thumbnail": "img/guantes_c.jpg",
+		"thumbnails": "img/guantes_c.jpg",
 		"code": "GUC001",
 		"stock": 100,
+		"category": "Apparel",
 		"id": 10
+	},
+	{
+		"title": "Corbata",
+		"description": "Guantes de cuero",
+		"price": 52.99,
+		"thumbnails": "img/guantes_c.jpg",
+		"code": "CBS001",
+		"stock": 100,
+		"category": "Apparel",
+		"id": 11
+	},
+	{
+		"title": "Zapatos",
+		"description": "Zapatos de cuero",
+		"price": 152.99,
+		"thumbnails": "img/zapatos.jpg",
+		"code": "ZPT001",
+		"stock": 100,
+		"category": "Apparel",
+		"id": 12
 	}
 ]

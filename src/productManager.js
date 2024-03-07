@@ -16,20 +16,22 @@ class ProductManager {
              console.log('Products loaded successfully.');
      }
 
-    async addProduct(title, description, price, thumbnail, code, stock) {
+    async addProduct(title, description, price, thumbnails, code, stock, category) {
         try {
 
             const product = {
                 title,
                 description,
                 price,
-                thumbnail,
+                thumbnails,
                 code,
                 stock,
+                category,
                 id: this.productIdCounter
             };
 
             // Verificar si ya existe un producto con el mismo código.
+            // console.log(this.#products);
             const existingProduct = this.#products.find(p => p.code === code);
             if (existingProduct) {
                 console.error("A product with this code already exists.");

@@ -14,10 +14,13 @@ class CartManager {
          const maxId = this.#carts.reduce((max, cart) => Math.max(max, cart.id), 0);
              this.cartIdCounter = maxId + 1;
              console.log('Carts loaded successfully.');
+             console.log("cartIdCounter:" + this.cartIdCounter);
+             console.log("maxId:" + maxId);
      }
 
     async createCart() {
         try {
+            console.log("cartIdCounter:" + this.cartIdCounter);
             const carts = await this.readFromFile();
             const newCart = {
                 id: this.cartIdCounter,
@@ -25,6 +28,7 @@ class CartManager {
             };
 
             carts.push(newCart);
+            this.cartIdCounter++;
             await this.saveToFile(carts);
             return newCart;
 
@@ -33,12 +37,30 @@ class CartManager {
         }
     }
 
-    async getCartProducts(cartId) {
-
+    async getCartProducts(cid) {
+        const carts = await this.readFromFile();
+        const cart = carts.find(c => c.id === cid);
+        return cart ?
+            cart.products
+            : [];
     }
 
-    async addProductToCart() {
-        
+    async addProductToCart(cid, pid, quantity = 1) {
+        const carts = await this.readFromFile();
+        const cartIndex = carts.findIndex(c => c.id ===cid);
+        if (cartIndex !== -1) {
+            const cart = carts[cartIndex];
+            const existingProductIndex = cart.products.findIndex(p => p.pid === pid);
+            console.log("EPIndex:" + existingProductIndex);
+            if (existingProductIndex !== -1) {
+                cart.products[existingProductIndex].quantity += quantity;
+            } else {
+                cart.products.push({ pid, quantity});
+            }
+            await this.saveToFile(carts);
+        } else {
+            throw new Error('Cart not found')
+        }
     }
 
     async getCarts() {
