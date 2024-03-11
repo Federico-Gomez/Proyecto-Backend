@@ -28,12 +28,12 @@ const food = [
     { itemname: 'Helado', itemprice: 7 }
 ];
 
-router.use((req, res, next) => {
+router.use((req, _, next) => {
     req.wsServer = req.app.get('ws');
     next();
-})
+});
 
-router.get('/users', (req, res) => {
+router.get('/users', (_, res) => {
     const userIndex = parseInt(Math.random() * users.length);
     const user = users[userIndex];
 
@@ -130,7 +130,7 @@ router.post('/realtimeproducts', async (req, res) => {
 
         if (productAdded) {
             // Si se agregó el producto correctamente, emitir evento de nuevo producto a través de Socket.IO
-            req.wsServer.emit('newProduct', productAdded);
+            req.wsServer.emit('newProductAdded', productAdded); 
             return res.status(201).json({ message: 'Product added successfully' });
         } else {
             return res.status(500).json({ error: 'Error adding product' });
@@ -140,5 +140,31 @@ router.post('/realtimeproducts', async (req, res) => {
         return res.status(500).json({ error: 'Error al cargar los productos' });
     }
 });
+
+// router.post('/realtimeproducts', async (req, res) => {
+//     try {
+//         // Extraigo los datos del producto a agregar de req.body
+//         const { title, description, price, thumbnails, code, stock, category } = req.body;
+
+//         // Agregar el producto al archivo Products.json
+//         await productsManager.addProduct(title, description, price, thumbnails, code, stock, category);
+
+//         // Obtener la lista actualizada de productos
+//         const productsData = await fs.readFile(`${__dirname}/../../assets/Products.json`);
+//         const products = JSON.parse(productsData);
+
+//         res.render('realTimeProducts', {
+//             title: 'Productos en tiempo real',
+//             products,
+//             useWS: true, // Establecemos useWS en verdadero
+//             scripts: [
+//                 'realTimeProducts.js'
+//             ]
+//         });
+
+//     } catch (error) {
+//         res.status(500).json({ error: 'Error al cargar los productos' });
+//     }
+// });
 
 module.exports = router;
