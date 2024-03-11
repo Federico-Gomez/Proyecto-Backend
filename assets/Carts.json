@@ -34,6 +34,10 @@
 			{
 				"pid": 2,
 				"quantity": 1
+			},
+			{
+				"pid": 11,
+				"quantity": 1
 			}
 		]
 	},

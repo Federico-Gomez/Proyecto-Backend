@@ -1,0 +1,17 @@
+<div class="user">
+    <h1>Nombre completo: {{user.firstname}} {{user.lastname}}</h1>
+    <h1>Edad: {{user.age}}</h1>
+    <h1>Email: {{user.email}}</h1>
+    <h1>Teléfono: {{user.phone}}</h1>
+</div>
+
+{{#if isAdmin}}
+<div>
+    <h2>Comida:</h2>
+    <ul>
+        {{#each food}}
+        <li class="comida">{{this.itemname}}, {{this.itemprice}}$</li>
+        {{/each}}
+    </ul>
+</div>
+{{/if}}
