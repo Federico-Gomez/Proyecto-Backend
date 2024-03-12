@@ -6,8 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const productList = document.getElementById('product-list');
     const addProductForm = document.getElementById('add-product-form');
 
-     // Envío de formulario para agregar producto
-     addProductForm.addEventListener('submit', (event) => {
+    // Envío de formulario para agregar producto
+    addProductForm.addEventListener('submit', (event) => {
         event.preventDefault();
 
         const formData = new FormData(addProductForm);
@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
     //         await fs.writeFile(`${__dirname}/../assets/Products.json`, JSON.stringify(products, null, '/t'), 'utf-8');
 
     //         socket.emit('productAdded', newProductData);
-            
+
     //     } catch (error) {
     //         console.error('Error al agregar el producto:', error);
     //     }

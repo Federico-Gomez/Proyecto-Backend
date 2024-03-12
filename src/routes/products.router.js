@@ -138,7 +138,7 @@ router.get('/test', (_, res) => {
 router.post('/', async (req, res) => {
     try {
         const { title, description, price, thumbnails, code, stock, category } = req.body;
-        if (!title || !description || !code || !price || !stock || !category) {
+        if (!title || !description || !code || !price || isNaN(stock) || stock < 0 || !category) {
             return res.status(400).json({ error: 'All fields are required except thumbnails'});
         }
 
@@ -171,4 +171,4 @@ router.delete('/:pid', async (req, res) => {
     }
 });
 
-module.exports = router;
+module.exports = { router, productsManager };

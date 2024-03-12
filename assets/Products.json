@@ -108,5 +108,25 @@
 		"stock": 100,
 		"category": "Apparel",
 		"id": 12
+	},
+	{
+		"title": "Campera",
+		"description": "Campera rompevientos",
+		"price": 450000,
+		"thumbnails": "NA",
+		"code": "CMPR433",
+		"stock": 35,
+		"category": "Apparel",
+		"id": 13
+	},
+	{
+		"title": "Campera",
+		"description": "Campera de lona",
+		"price": 400000,
+		"thumbnails": "NA",
+		"code": "CMPR43",
+		"stock": 0,
+		"category": "Apparel",
+		"id": 14
 	}
 ]

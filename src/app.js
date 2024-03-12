@@ -1,8 +1,9 @@
-const productsRouter = require('./routes/products.router');
+const { router: productsRouter, productsManager } = require('./routes/products.router');
 const cartsRouter = require('./routes/carts.router');
 const viewsRouter = require('./routes/views.router');
 const usersRouter = require('./routes/users.router');
 // const petsRouter = require('./routes/pets.router');
+const fs = require('fs').promises;
 const express = require('express');
 const handlebars = require('express-handlebars');
 const { Server } = require('socket.io');
@@ -48,7 +49,7 @@ app.use('/api/users', usersRouter);
 //         });
 
 //         const wsServer = new Server(httpServer);
-        
+
 //         // Manejo de errores de inicialización de servidor
 //         httpServer.on('error', (error) => {
 //             console.error('Error en el servidor:', error);
@@ -108,6 +109,24 @@ wsServer.on('error', (error) => {
 
 wsServer.on('connection', (clientSocket) => {
     console.log(`Client connected, ID: ${clientSocket.id}`);
+
+    clientSocket.on('addProduct', async (product) => {
+        try {
+            const { title, description, thumbnails, code, category } = product;
+            const price = parseInt(product.price);
+            const stock = parseInt(product.stock);
+            if (!title || !description || !code || !price || isNaN(stock) || stock < 0 || !category) {
+                return res.status(400).json({ error: 'All fields are required except thumbnails' });
+            }
+
+            await productsManager.addProduct(title, description, price, thumbnails, code, stock, category);
+            console.log('Added product:', product);
+            wsServer.emit('newProductAdded', product);
+
+        } catch (error) {
+            console.error('Error al agregar el producto:', error);
+        }
+    });
 });
 
 app.set('ws', wsServer);
