@@ -30,6 +30,16 @@
 		"id": 3
 	},
 	{
+		"title": "Zapatos",
+		"description": "Zapatos de cuero",
+		"price": 152.99,
+		"thumbnails": "img/zapatos.jpg",
+		"code": "ZPT001",
+		"stock": 100,
+		"category": "Apparel",
+		"id": 4
+	},
+	{
 		"title": "Camisa",
 		"description": "Camisa a cuadros",
 		"price": 42.99,
@@ -72,61 +82,11 @@
 	{
 		"title": "Guantes",
 		"description": "Guantes de algodón",
-		"price": 1000,
+		"price": 18.99,
 		"thumbnails": "img/guantes_a.jpg",
 		"code": "GUA001",
 		"stock": 100,
 		"category": "Apparel",
 		"id": 9
-	},
-	{
-		"title": "Guantes",
-		"description": "Guantes de cuero",
-		"price": 52.99,
-		"thumbnails": "img/guantes_c.jpg",
-		"code": "GUC001",
-		"stock": 100,
-		"category": "Apparel",
-		"id": 10
-	},
-	{
-		"title": "Corbata",
-		"description": "Guantes de cuero",
-		"price": 52.99,
-		"thumbnails": "img/guantes_c.jpg",
-		"code": "CBS001",
-		"stock": 100,
-		"category": "Apparel",
-		"id": 11
-	},
-	{
-		"title": "Zapatos",
-		"description": "Zapatos de cuero",
-		"price": 152.99,
-		"thumbnails": "img/zapatos.jpg",
-		"code": "ZPT001",
-		"stock": 100,
-		"category": "Apparel",
-		"id": 12
-	},
-	{
-		"title": "Campera",
-		"description": "Campera rompevientos",
-		"price": 450000,
-		"thumbnails": "NA",
-		"code": "CMPR433",
-		"stock": 35,
-		"category": "Apparel",
-		"id": 13
-	},
-	{
-		"title": "Campera",
-		"description": "Campera de lona",
-		"price": 400000,
-		"thumbnails": "NA",
-		"code": "CMPR43",
-		"stock": 0,
-		"category": "Apparel",
-		"id": 14
 	}
 ]

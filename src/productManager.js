@@ -1,7 +1,7 @@
 const fs = require('fs').promises;
 
 class ProductManager {
-    #products
+    #products;
 
     constructor(filePath) {
         // this.#products = [];
@@ -17,6 +17,7 @@ class ProductManager {
      }
 
     async addProduct(title, description, price, thumbnails, code, stock, category) {
+        let idProduct = -1;
         try {
 
             const product = {
@@ -35,24 +36,28 @@ class ProductManager {
             const existingProduct = this.#products.find(p => p.code === code);
             if (existingProduct) {
                 console.error("A product with this code already exists.");
-                return;
+                throw new Error("A product with this code already exists.");
             }
 
             console.log(this.productIdCounter);
             this.#products.push(product);
             this.productIdCounter++;
             await this.saveToFile(this.#products);
-            console.log("Product added succesfully:", product);
+            console.log("Product added succesfully:", product); 
+            idProduct = product.id;
 
         } catch (error) {
             console.error("Error adding product:", error);
+            throw new Error("Error adding product:" + error.message);
         }
+
+        return idProduct;
     }
 
     async getProducts() {
         try {
             const products = await fs.readFile(this.path, 'utf-8');
-            console.log('Products read from file:', products);
+            // console.log('Products read from file:', products);
             return JSON.parse(products);
         } catch (error) {
             console.error("Error obtaining products:", error);
@@ -96,7 +101,7 @@ class ProductManager {
             let products = await this.readFromFile();
             products = products.filter(p => p.id !== id);
             await this.saveToFile(products);
-            console.log("Product deleted, remaining products:", products)
+            // console.log("Product deleted, remaining products:", products);
         } catch (error) {
             console.error("Error deleting product:", error);
         }
@@ -105,7 +110,7 @@ class ProductManager {
     async readFromFile() {
         try {
             // Verificar si el archivo existe antes de intentar leerlo
-            const fileExists = await fs.access(this.path, fs.constants.F_OK)
+            const fileExists = await fs.access(this.path)
                 .then(() => true)
                 .catch(() => false);
     

@@ -3,8 +3,11 @@
 <div>
     <ul id="product-list">
         {{#each products}}
-        <li>{{this.title}} - {{this.description}} - {{this.price}} - {{this.thumbnails}} - {{this.code}} -
-            {{this.stock}} - {{this.category}}</li>
+        <li id="{{this.id}}">
+            {{this.title}} - {{this.description}} - {{this.price}} - {{this.thumbnails}} - {{this.code}} -
+            {{this.stock}} - {{this.category}}
+            <button class="delete-product" data-product-id="{{this.id}}">Eliminar</button>
+        </li>
         {{/each}}
     </ul>
 </div>

@@ -7,96 +7,96 @@ const productsManager = new ProductManager(filename);
 const initializeProductManager = async () => {
 
         await productsManager.initialize();
-        await productsManager.addProduct(
-            "Skirt",
-            "Skirt de algodón",
-            52.99,
-            "img/skirt.jpg",
-            "SKT001",
-            100,
-            "Apparel"
-        );
-        await productsManager.addProduct(
-            "Shirt",
-            "Shirt de pima",
-            22.99,
-            "img/shirt.jpg",
-            "SHT001",
-            100,
-            "Apparel"
-        );
-        await productsManager.addProduct(
-            "Medias",
-            "Medias de algodón",
-            1.99,
-            "img/medias.jpg",
-            "MED001",
-            100,
-            "Apparel"
-        );
-        await productsManager.addProduct(
-            "Zapatos",
-            "Zapatos de cuero",
-            152.99,
-            "img/zapatos.jpg",
-            "ZPT001",
-            100,
-            "Apparel"
-        );
-        await productsManager.addProduct(
-            "Camisa",
-            "Camisa a cuadros",
-            42.99,
-            "img/camisa.jpg",
-            "CMS001",
-            100,
-            "Apparel"
-        );
-        await productsManager.addProduct(
-            "Medias",
-            "Medias cortas",
-            0.99,
-            "img/medias_c.jpg",
-            "MEDC001",
-            100,
-            "Apparel"
-        );
-        await productsManager.addProduct(
-            "Jeans",
-            "Jeans negro",
-            62.99,
-            "img/jeans_n.jpg",
-            "JNN001",
-            100,
-            "Apparel"
-        );
-        await productsManager.addProduct(
-            "Jeans",
-            "Jeans denim",
-            22.99,
-            "img/jeans_d.jpg",
-            "JND001",
-            100,
-            "Apparel"
-        );
-        await productsManager.addProduct(
-            "Guantes",
-            "Guantes de algodón",
-            18.99,
-            "img/guantes_a.jpg",
-            "GUA001",
-            100,
-            "Apparel"
-        );
-        await productsManager.addProduct(
-            "Guantes",
-            "Guantes de cuero",
-            52.99,
-            "img/guantes_c.jpg",
-            "GUC001",
-            100,
-            "Apparel"
-        );
+        // await productsManager.addProduct(
+        //     "Skirt",
+        //     "Skirt de algodón",
+        //     52.99,
+        //     "img/skirt.jpg",
+        //     "SKT001",
+        //     100,
+        //     "Apparel"
+        // );
+        // await productsManager.addProduct(
+        //     "Shirt",
+        //     "Shirt de pima",
+        //     22.99,
+        //     "img/shirt.jpg",
+        //     "SHT001",
+        //     100,
+        //     "Apparel"
+        // );
+        // await productsManager.addProduct(
+        //     "Medias",
+        //     "Medias de algodón",
+        //     1.99,
+        //     "img/medias.jpg",
+        //     "MED001",
+        //     100,
+        //     "Apparel"
+        // );
+        // await productsManager.addProduct(
+        //     "Zapatos",
+        //     "Zapatos de cuero",
+        //     152.99,
+        //     "img/zapatos.jpg",
+        //     "ZPT001",
+        //     100,
+        //     "Apparel"
+        // );
+        // await productsManager.addProduct(
+        //     "Camisa",
+        //     "Camisa a cuadros",
+        //     42.99,
+        //     "img/camisa.jpg",
+        //     "CMS001",
+        //     100,
+        //     "Apparel"
+        // );
+        // await productsManager.addProduct(
+        //     "Medias",
+        //     "Medias cortas",
+        //     0.99,
+        //     "img/medias_c.jpg",
+        //     "MEDC001",
+        //     100,
+        //     "Apparel"
+        // );
+        // await productsManager.addProduct(
+        //     "Jeans",
+        //     "Jeans negro",
+        //     62.99,
+        //     "img/jeans_n.jpg",
+        //     "JNN001",
+        //     100,
+        //     "Apparel"
+        // );
+        // await productsManager.addProduct(
+        //     "Jeans",
+        //     "Jeans denim",
+        //     22.99,
+        //     "img/jeans_d.jpg",
+        //     "JND001",
+        //     100,
+        //     "Apparel"
+        // );
+        // await productsManager.addProduct(
+        //     "Guantes",
+        //     "Guantes de algodón",
+        //     18.99,
+        //     "img/guantes_a.jpg",
+        //     "GUA001",
+        //     100,
+        //     "Apparel"
+        // );
+        // await productsManager.addProduct(
+        //     "Guantes",
+        //     "Guantes de cuero",
+        //     52.99,
+        //     "img/guantes_c.jpg",
+        //     "GUC001",
+        //     100,
+        //     "Apparel"
+        // );
 }
 
 initializeProductManager();

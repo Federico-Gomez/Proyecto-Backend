@@ -28,6 +28,8 @@ const food = [
     { itemname: 'Helado', itemprice: 7 }
 ];
 
+
+// Middleware para utilizar httpServer
 router.use((req, _, next) => {
     req.wsServer = req.app.get('ws');
     next();
@@ -85,7 +87,7 @@ router.get('/register', (_, res) => {
     });
 });
 
-router.get('/home', async (req, res) => {
+router.get('/home', async (_, res) => {
     try {
         // Leer el archivo Products.json
         const productsData = await fs.readFile(`${__dirname}/../../assets/Products.json`);
@@ -120,26 +122,44 @@ router.get('/realtimeproducts', async (_, res) => {
     }
 });
 
-// router.post('/realtimeproducts', async (req, res) => {
+// POST para agregar productos a la vista '/realtimeproducts' desde el servidor
+router.post('/realtimeproducts', async (req, res) => {
+    console.log(req.body);
+
+    // Se ejecuta cuando se agrega un producto desde el formulario
+    // 1 -> Agregar producto desde el manager
+    try {
+        const { title, description, thumbnails, code, category } = req.body;
+        const price = parseInt(req.body.price);
+        const stock = parseInt(req.body.stock);
+        if (!title || !description || !code || !price || isNaN(stock) || stock < 0 || !category) {
+            return res.status(400).json({ error: 'All fields are required except thumbnails' });
+        }
+
+        await productsManager.addProduct(title, description, price, thumbnails, code, stock, category);
+
+        // 2 -> Notificar a los clientes desde WS que se agregó un producto nuevo
+        req.wsServer.emit('newProductAdded', { title, description, price, thumbnails, code, stock, category })
+        res.redirect('/realtimeproducts');
+    } catch (error) {
+        // res.status(500).json({ error: 'Error al cargar el producto' });
+        req.wsServer.emit('newProductError', 'Error al cargar el producto: ' + error.message);
+    }
+});
+
+// router.delete('/realtimeproducts/pid', async (req, res) => {
+//     const productId = req.params.pid;
 //     try {
-//         // Extraigo los datos del producto a agregar de req.body
-//         const { title, description, price, thumbnails, code, stock, category } = req.body;
+//         // Eliminar el producto del archivo Products.json
+//         await productsManager.deleteProduct(productId);
 
-//         // Agrego el producto al array Products.json
-//         const productAdded = await productsManager.addProduct(title, description, price, thumbnails, code, stock, category);
+//         // Emitir evento de eliminación a través de WebSocket
+//         req.wsServer.emit('productDeleted', productId);
 
-//         if (productAdded) {
-//             // Si se agregó el producto correctamente, emitir evento de nuevo producto a través de Socket.IO
-//             req.wsServer.emit('newProductAdded', productAdded); 
-//             return res.status(201).json({ message: 'Product added successfully' });
-//         } else {
-//             return res.status(500).json({ error: 'Error adding product' });
-//         }
-
+//         return res.status(200).json({ message: 'Product deleted successfully' });
 //     } catch (error) {
-//         return res.status(500).json({ error: 'Error al cargar los productos' });
+//         return res.status(500).json({ error: 'Error deleting product' });
 //     }
 // });
-
 
 module.exports = router;

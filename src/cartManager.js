@@ -119,7 +119,7 @@ class CartManager {
     async readFromFile() {
         try {
             // Verificar si el archivo existe antes de intentar leerlo
-            const fileExists = await fs.access(this.path, fs.constants.F_OK)
+            const fileExists = await fs.access(this.path)
                 .then(() => true)
                 .catch(() => false);
     
