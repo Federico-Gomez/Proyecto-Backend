@@ -1,16 +1,6 @@
 const fs = require('fs').promises;
-const ProductManager = require('./../productManager');
 const { Router } = require('express');
 const { Server } = require('socket.io');
-
-const filename = `${__dirname}/../../assets/Products.json`;
-const productsManager = new ProductManager(filename);
-
-const initializeProductManager = async () => {
-    await productsManager.initialize();
-}
-
-initializeProductManager();
 
 const router = Router();
 
@@ -136,7 +126,8 @@ router.post('/realtimeproducts', async (req, res) => {
             return res.status(400).json({ error: 'All fields are required except thumbnails' });
         }
 
-        await productsManager.addProduct(title, description, price, thumbnails, code, stock, category);
+        const productManager = req.app.get('productManager');
+        await productManager.addProduct(title, description, price, thumbnails, code, stock, category);
 
         // 2 -> Notificar a los clientes desde WS que se agregó un producto nuevo
         req.wsServer.emit('newProductAdded', { title, description, price, thumbnails, code, stock, category })
