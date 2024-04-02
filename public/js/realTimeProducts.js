@@ -6,7 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('Conexión establecida con el servidor WebSocket');
 
     const productList = document.getElementById('product-list');
-    const addProductForm = document.getElementById('add-product-form');
+    
+    // const addProductForm = document.getElementById('add-product-form');
 
     // Escucha para agregar productos a la vista '/realtimeproducts' desde el cliente (Browser)
     // addProductForm.addEventListener('submit', (event) => {

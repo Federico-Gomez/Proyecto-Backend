@@ -2,12 +2,15 @@ const express = require('express');
 const mongoose = require('mongoose');
 const handlebars = require('express-handlebars');
 const { Server } = require('socket.io');
+const { Message } = require('./dao/models');
 
 const FilesProductManager = require('./dao/fileManagers/productManager');
 const DbProductManager = require('./dao/dbManagers/dbProductManager');
 
 const FilesCartManager = require('./dao/fileManagers/cartManager');
 const DbCartManager = require('./dao/dbManagers/dbCartManager');
+
+const DbMessageManager = require('./dao/dbManagers/dbMessageManager');
 
 const app = express();
 
@@ -48,7 +51,7 @@ app.use('/api/users', usersRouter);
 // wsServer.on('connection', (clientSocket) => {
 //     console.log(`Client connected, ID: ${clientSocket.id}`);
 
-        // Agrega productos via escucha de evento generado en cliente
+// Agrega productos via escucha de evento generado en cliente
 //     clientSocket.on('addProduct', async (product) => {
 //         try {
 //             const { title, description, thumbnails, code, category } = product;
@@ -92,54 +95,98 @@ app.use('/api/users', usersRouter);
 const main = async () => {
 
     await mongoose.connect(
-        'mongodb+srv://fedehgz:Amard0nandShem1n@proyectobackendcoder.75803kx.mongodb.net/?retryWrites=true&w=majority'
+        'mongodb+srv://fedehgz:<password>@ecommerce.nojdknt.mongodb.net/?retryWrites=true&w=majority'
         // 'mongodb://127.0.0.1:27017/'
         ,
 
         {
-            dbName: 'Proyecto_Backend_FG'
+            dbName: 'ecommerce'
         }
 
     );
 
     // CON WEB SOCKET
     const httpServer = app.listen(8080, () => {
-        console.log('Server ready!');
+        console.log('Server ready! Listening on PORT 8080');
     });
 
-    const wsServer = new Server(httpServer);
-    app.set('ws', wsServer);
+    const io = new Server(httpServer);
+    app.set('ws', io);
 
-    const productsfilename = `${__dirname}/../assets/Products.json`;
-    const productManager = new FilesProductManager(productsfilename);
-    await productManager.initialize();
+    // const productsfilename = `${__dirname}/../assets/Products.json`;
+    // const productManager = new FilesProductManager(productsfilename);
+    // await productManager.initialize();
+
+    const productManager = new DbProductManager();
+    await productManager.prepare();
+
     app.set('productManager', productManager);
 
-    const cartsFilename = `${__dirname}/../assets/Carts.json`;
-    const cartManager = new FilesCartManager(cartsFilename);
-    await cartManager.initialize();
+    // const cartsFilename = `${__dirname}/../assets/Carts.json`;
+    // const cartManager = new FilesCartManager(cartsFilename);
+    // await cartManager.initialize();
+
+    const cartManager = new DbCartManager();
+    await cartManager.prepare();
+
     app.set('cartManager', cartManager);
 
-    wsServer.on('connection', (clientSocket) => {
-    console.log(`Client connected, ID: ${clientSocket.id}`);
+    const messageManager = new DbMessageManager();
 
-     // Escuchar evento 'deleteProduct' emitido por el cliente
-     clientSocket.on('deleteProduct', async (productId) => {
-        try {
-            const id = parseInt(productId);
-            if (isNaN(id)) {
-                throw new Error('Invalid productId: ' + productId);
+    app.set('messageManager', messageManager);
+
+    // Array de mensajes para el chat
+    const messageHistory = [];
+
+    io.on('connection', (clientSocket) => {
+        console.log(`Client connected, ID: ${clientSocket.id}`);
+
+        // Escuchar evento 'deleteProduct' emitido por el cliente
+        clientSocket.on('deleteProduct', async (productId) => {
+            try {
+                const id = productId;
+                // const id = parseInt(productId);
+                // if (isNaN(id)) {
+                //     throw new Error('Invalid productId: ' + productId);
+                // }
+
+                // Borrar producto por ID
+                await productManager.deleteProduct(id);
+
+                // Emitir evento 'productDeleted' a los clientes
+                io.emit('productDeleted', id);
+                console.log('Product deleted:', id);
+            } catch (error) {
+                console.error('Error deleting product:', error);
             }
-            // Borrar producto por ID
-            await productManager.deleteProduct(id);
-            // Emitir evento 'productDeleted' a los clientes
-            wsServer.emit('productDeleted', id);
-            console.log('Product deleted:', id);
-        } catch (error) {
-            console.error('Error deleting product:', error);
+        });
+
+        // Enviar todos los mensajes del chat a los usuarios que se conecten
+        for (const data of messageHistory) {
+            clientSocket.emit('message', data);
         }
+
+        clientSocket.on('message', async (data) => {
+            messageHistory.push(data);
+            try {
+                // const message = new Message(data);
+                // await message.save();
+                // console.log('Message saved to database:', message);
+                const { username, message } = data;
+                await messageManager.saveMessage(username, message);
+                console.log('Message saved successfully:', data);
+            } catch (error) {
+                console.error('Error saving message:', error);
+                throw error;
+            }
+            io.emit('message', (data));
+        });
+
+        clientSocket.on('user-connected', (username) => {
+            // Notificar a los demás que se ha conectado un nuevo usuario al chat
+            clientSocket.broadcast.emit('user-joined-chat', username);
+        });
     });
-});
 
     // SIN WEB SOCKET
     // app.listen(8080, () => {

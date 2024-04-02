@@ -1,0 +1,44 @@
+<h1>Carts</h1>
+
+<div>
+    <ul>
+        {{#each carts}}
+        <li>
+            Cart ID: {{this._id}}
+            <br>
+            <h3>Cart Items</h3>
+            <ul>
+                {{#each this.products}}
+                <li>{{this._id}} - {{this.quantity}}</li>
+                {{/each}}
+            </ul>
+        </li>
+        {{/each}}
+    </ul>
+</div>
+
+<div>
+    <h2>Add Product to Cart</h2>
+    <form id="add-to-cart-form" action="/realtimecarts/products" method="post">
+        <label for="cartId">Cart ID:</label>
+        <input type="text" id="cartId" name="cartId" required>
+        <br>
+
+        <label for="productId">Product ID:</label>
+        <input type="text" id="productId" name="productId" required>
+        <br>
+
+        <label for="quantity">Quantity:</label>
+        <input type="number" id="quantity" name="quantity" required min="1">
+        <br>
+
+        <button type="submit">Add to Cart</button>
+    </form>
+</div>
+
+<div>
+    <h2>Create New Cart</h2>
+    <form id="create-cart-form" action="/realtimecarts" method="post">
+        <button id="create-cart-btn" type="submit">Create New Cart</button>
+    </form>
+</div>

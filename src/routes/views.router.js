@@ -1,6 +1,8 @@
 const fs = require('fs').promises;
 const { Router } = require('express');
 const { Server } = require('socket.io');
+const { Product } = require('../dao/models');
+const { Cart } = require('../dao/models');
 
 const router = Router();
 
@@ -53,7 +55,15 @@ router.get('/', (req, res) => {
 router.get('/chat', (req, res) => {
     res.render('chat', {
         title: 'Chat App',
-        name: req.query.name
+        useWS: true,
+        useSweetAlert: true,
+        username: req.query.username,
+        styles: [
+            'chat.css'
+        ],
+        scripts: [
+            'chat.js'
+        ]
     });
 });
 
@@ -93,10 +103,14 @@ router.get('/home', async (_, res) => {
     }
 });
 
-router.get('/realtimeproducts', async (_, res) => {
+router.get('/realtimeproducts', async (req, res) => {
     try {
-        const productsData = await fs.readFile(`${__dirname}/../../assets/Products.json`);
-        const products = JSON.parse(productsData);
+        // const productsData = await fs.readFile(`${__dirname}/../../assets/Products.json`);
+        // const products = JSON.parse(productsData);
+
+        const productManager = req.app.get('productManager');
+        const products = await productManager.getProducts();
+        // res.status(200).json(products);
 
         res.render('realTimeProducts', {
             title: 'Productos en tiempo real',
@@ -104,6 +118,27 @@ router.get('/realtimeproducts', async (_, res) => {
             useWS: true, // Establecemos useWS en verdadero
             scripts: [
                 'realTimeProducts.js'
+            ]
+        });
+
+    } catch (error) {
+        res.status(500).json({ error: 'Error al cargar los productos' });
+    }
+});
+
+router.get('/realtimecarts', async (req, res) => {
+    try {
+
+        const cartManager = req.app.get('cartManager');
+        const carts = await cartManager.getCarts();
+        // res.status(200).json(products);
+
+        res.render('realTimeCarts', {
+            title: 'Carritos en tiempo real',
+            carts,
+            useWS: true, // Establecemos useWS en verdadero
+            scripts: [
+                // 'realTimeCarts.js'
             ]
         });
 
@@ -122,19 +157,39 @@ router.post('/realtimeproducts', async (req, res) => {
         const { title, description, thumbnails, code, category } = req.body;
         const price = parseInt(req.body.price);
         const stock = parseInt(req.body.stock);
-        if (!title || !description || !code || !price || isNaN(stock) || stock < 0 || !category) {
-            return res.status(400).json({ error: 'All fields are required except thumbnails' });
-        }
 
         const productManager = req.app.get('productManager');
         await productManager.addProduct(title, description, price, thumbnails, code, stock, category);
 
         // 2 -> Notificar a los clientes desde WS que se agregó un producto nuevo
-        req.wsServer.emit('newProductAdded', { title, description, price, thumbnails, code, stock, category })
+        // req.wsServer.emit('newProductAdded', { title, description, price, thumbnails, code, stock, category });
         res.redirect('/realtimeproducts');
     } catch (error) {
         // res.status(500).json({ error: 'Error al cargar el producto' });
         req.wsServer.emit('newProductError', 'Error al cargar el producto: ' + error.message);
+    }
+});
+
+router.post('/realtimecarts', async (req, res) => {
+    try {
+        const cartManager = req.app.get('cartManager');
+        await cartManager.createCart();
+        res.redirect('/realtimecarts');
+    } catch (error) {
+        console.error('Error creating cart: ', error);
+        res.status(500).json({ error: 'Failed to create cart'});
+    }
+});
+
+router.post('/realtimecarts/products', async (req, res) => {
+    try {
+        const { cartId, productId, quantity } = req.body;
+        const cartManager = req.app.get('cartManager');
+        await cartManager.addProductToCart(cartId, productId, quantity);
+        res.redirect('/realtimecarts');
+    } catch (error) {
+        console.error('Error adding product to cart: ', error);
+        res.status(500).json({ error: 'Failed to add product to cart'});
     }
 });
 
