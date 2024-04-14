@@ -177,7 +177,7 @@ router.post('/realtimecarts', async (req, res) => {
         res.redirect('/realtimecarts');
     } catch (error) {
         console.error('Error creating cart: ', error);
-        res.status(500).json({ error: 'Failed to create cart'});
+        res.status(500).json({ error: 'Failed to create cart' });
     }
 });
 
@@ -189,9 +189,59 @@ router.post('/realtimecarts/products', async (req, res) => {
         res.redirect('/realtimecarts');
     } catch (error) {
         console.error('Error adding product to cart: ', error);
-        res.status(500).json({ error: 'Failed to add product to cart'});
+        res.status(500).json({ error: 'Failed to add product to cart' });
     }
 });
+
+router.get('/products', async (req, res) => {
+    try {
+        // Extract query parameters
+        const { limit = 10, page = 1, sort, category } = req.query;
+        console.log('Category:', category);
+
+        // Build conditions object for the query
+        const conditions = {};
+
+        // Apply category filter if provided
+        if (category) {
+            conditions.category = category; // Use $in operator for category filter
+        }
+
+        // Build options object for pagination
+        const options = {
+            limit: parseInt(limit),
+            page: parseInt(page),
+            lean: true
+        };
+
+        // Apply sorting if provided
+        if (sort) {
+            options.sort = { price: sort === 'desc' ? -1 : 1 };
+        }
+
+        // Perform paginated query for products
+        const result = await Product.paginate(conditions, options);
+        console.log(result);
+        // Send response with the specified format
+        res.render('products', {
+            title: 'Product List',
+            status: 'success',
+            payload: result.docs,
+            totalPages: result.totalPages,
+            prevPage: result.prevPage,
+            nextPage: result.nextPage,
+            page: result.page,
+            hasPrevPage: result.hasPrevPage,
+            hasNextPage: result.hasNextPage,
+            styles: ['products.css']
+        });
+    } catch (error) {
+        // Error handling
+        console.error('Error retrieving products:', error);
+        res.status(500).json({ status: 'error', error: 'Error retrieving products.' });
+    }
+});
+
 
 // router.delete('/realtimeproducts/pid', async (req, res) => {
 //     const productId = req.params.pid;

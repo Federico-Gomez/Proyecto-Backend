@@ -95,7 +95,7 @@ app.use('/api/users', usersRouter);
 const main = async () => {
 
     await mongoose.connect(
-        'mongodb+srv://fedehgz:<password>@ecommerce.nojdknt.mongodb.net/?retryWrites=true&w=majority'
+        'mongodb+srv://fedehgz:Amard0nandShem1n@ecommerce.nojdknt.mongodb.net/?retryWrites=true&w=majority'
         // 'mongodb://127.0.0.1:27017/'
         ,
 
@@ -121,6 +121,9 @@ const main = async () => {
     await productManager.prepare();
 
     app.set('productManager', productManager);
+
+    // Código para agregar (n) productos fake a la collection 'products'
+    // await productManager.addFakeProducts(30);
 
     // const cartsFilename = `${__dirname}/../assets/Carts.json`;
     // const cartManager = new FilesCartManager(cartsFilename);

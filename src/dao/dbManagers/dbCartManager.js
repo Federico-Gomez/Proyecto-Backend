@@ -1,4 +1,5 @@
 const { Cart } = require('../models');
+const mongoose = require('mongoose');
 
 class CartManager {
     #carts
@@ -26,7 +27,8 @@ class CartManager {
         try {
             
             await Cart.create({
-                products: []
+                products: [],
+                text: 'for testing update endpoints'
             });
 
         } catch (error) {
@@ -35,13 +37,12 @@ class CartManager {
         }
     }
 
-    async getCartProducts(cid) {
+    async getCart(cid) {
         try {
-            const cart = await Cart.findOne({ _id: cid });
 
-            return cart ?
-            cart.products
-            : [];
+            const cart = await Cart.findOne({ _id: cid }).populate('products._id').lean();
+
+            return cart ? cart : null;
             
         } catch (error) {
             console.error("Error obtaining product by ID:", error);
@@ -85,41 +86,54 @@ class CartManager {
         }
     }
 
-    async getCartById(cid) {
+    async updateCart(cid, updatedCart) {
         try {
-            const cart = await Cart.findOne({ _id: cid });
-            if (cart) {
-                return cart;
-            } else {
-                console.error("Cart not found.");
-            }
+            await Cart.updateOne({ _id: cid }, updatedCart);
         } catch (error) {
-            console.error("Error obtaining cart by ID:", error);
-            return null;
+            console.error("Error updating cart:", error);
+            throw error;
         }
     }
 
-    async updateCart(cid, updatedFields) {
+    async updateProductQuantity(cid, pid, quantity) {
         try {
-            const carts = await Cart.find();
-            const index = carts.findIndex(c => c._id === cid);
-            if (index !== -1) {
-                carts[index] = { ...carts[index], ...updatedFields };
-                console.log("Cart updated:", carts[index]);
+            const cart = await Cart.findOne({ _id: cid });
+            if (!cart) {
+                throw new Error('Cart not found');
+            }
+            const productIndex = cart.products.findIndex(p => p._id.toString() === pid);
+            if (productIndex != -1) {
+                cart.products[productIndex].quantity = quantity;
+                await cart.save();
             } else {
-                console.error("Error finding cart to update.");
+                throw new Error('Product not found');
             }
         } catch (error) {
-            console.error("Error updating cart:", error);
+            console.error('Error updating product quantity', error);
+            throw error;
         }
     }
 
     async deleteCart(cid) {
         try {
             await Cart.deleteOne({ _id: cid });
-            console.log("Cart deleted, remaining carts:", carts)
+            console.log("Cart deleted");
         } catch (error) {
             console.error("Error deleting cart:", error);
+        }
+    }
+
+    async removeProductFromCart(cid, pid) {
+        try {
+            const cart = await Cart.findOne({ _id: cid });
+            if (!cart) {
+                throw new Error('Cart not found');
+            }
+            cart.products = cart.products.filter(p => p._id.toString() !== pid);
+            await cart.save();
+        } catch (error) {
+            console.error('Error removing product from cart', error);
+            throw error;
         }
     }
 }

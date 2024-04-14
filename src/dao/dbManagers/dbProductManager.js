@@ -1,4 +1,5 @@
 const { Product } = require('../models');
+const { faker } = require('@faker-js/faker');
 
 class ProductManager {
     #products
@@ -12,7 +13,7 @@ class ProductManager {
     //         this.productIdCounter = maxId + 1;
     // }
 
-    async prepare() { 
+    async prepare() {
         // Chequear que la conexión existe y está funcionando
         if (Product.db.readyState !== 1) {
             throw new Error('must connect to mongodb!')
@@ -36,10 +37,37 @@ class ProductManager {
                 category
                 // id: this.productIdCounter
             })
-            .then((prod) => {
-                console.log("Product added succesfully:" + prod);
-            });
- 
+                .then((prod) => {
+                    console.log("Product added succesfully:" + prod);
+                });
+
+
+        } catch (error) {
+            console.error("Error adding product: ", error);
+            throw new Error("Error adding product: " + error.message);
+        }
+    }
+
+    async addFakeProducts(n) {
+        try {
+            const pickRandom = arr => arr[parseInt(Math.random() * arr.length)];
+            const randomCategory = () => pickRandom(["Apparel", "Accessories", "Footwear"]);
+
+            const NUM = n;
+            for (let i = 0; i < NUM; i++) {
+                await Product.create({
+                    title: faker.commerce.productName(),
+                    description: faker.lorem.sentences(),
+                    price: faker.commerce.price(),
+                    thumbnails: faker.image.url(),
+                    code: faker.string.uuid(),
+                    stock: faker.number.int({ min: 1, max: 100}),
+                    category: randomCategory()
+                });
+            }
+
+            console.log('Products created!');
+
 
         } catch (error) {
             console.error("Error adding product: ", error);
@@ -60,11 +88,11 @@ class ProductManager {
                 queryConditions.push({ category });
             };
 
-            const products = queryConditions.length 
+            const products = queryConditions.length
                 ? await Product.find({ $and: queryConditions })
                 : await Product.find();
 
-                return products.map(p => p.toObject({ virtuals: true }));
+            return products.map(p => p.toObject({ virtuals: true }));
 
         } catch (error) {
             console.error("Error obtaining products:", error);
@@ -72,9 +100,54 @@ class ProductManager {
         }
     }
 
+    async getProductsWithPagination(filters = {}) {
+        try {
+            const { limit = 10, page = 1, sort = null, query = {} } = filters;
+            const { title, category } = query;
+
+            const queryConditions = {};
+
+            if (title) {
+                queryConditions.title = title;
+            }
+
+            if (category) {
+                queryConditions.category = category;
+            }
+
+            const options = {
+                page,
+                limit,
+                sort: sort ? { price: sort === 'asc' ? 1 : -1 } : null,
+            };
+
+            const paginatedResults = await Product.paginate(queryConditions, options);
+
+            return {
+                status: 'success',
+                payload: paginatedResults.docs,
+                totalPages: paginatedResults.totalPages,
+                page: paginatedResults.page,
+                prevPage: paginatedResults.prevPage,
+                nextPage: paginatedResults.nextPage,
+                hasPrevPage: paginatedResults.hasPrevPage,
+                hasNextPage: paginatedResults.hasNextPage,
+                prevLink: paginatedResults.hasPrevPage ? `/api/products?limit=${limit}&page=${paginatedResults.prevPage}` : null,
+                nextLink: paginatedResults.hasNextPage ? `/api/products?limit=${limit}&page=${paginatedResults.nextPage}` : null,
+            };
+        } catch (error) {
+            console.error("Error obtaining products:", error);
+            return {
+                status: 'error',
+                error: 'Error obtaining products'
+            };
+        }
+    }
+
     async getProductById(id) {
         try {
-            await Product.findOne({ _id: id });
+           const product = await Product.findOne({ _id: id });
+           return product.toObject({ virtuals: true });
         } catch (error) {
             console.error("Error obtaining product by ID:", error);
             return null;
@@ -83,13 +156,13 @@ class ProductManager {
 
     async updateProduct(id, updatedFields) {
         try {
-            const products = await Product.find();
-            const index = products.findIndex(p => p._id === id);
-            if (index !== -1) {
-                products[index] = { ...products[index], ...updatedFields };
-                console.log("Product updated:", products[index]);
+            // Update the product directly in the database
+            const updatedProduct = await Product.findByIdAndUpdate(id, updatedFields, { new: true });
+    
+            if (updatedProduct) {
+                console.log("Product updated:", updatedProduct);
             } else {
-                console.error("Error finding product to update.");
+                console.error("Error finding or updating product.");
             }
         } catch (error) {
             console.error("Error updating product:", error);

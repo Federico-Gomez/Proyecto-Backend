@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const collection = 'products';
 
@@ -16,4 +17,6 @@ productSchema.virtual('id').get(function() {
     return this._id.toString();
 });
 
-module.exports  = mongoose.model(collection, productSchema);
+productSchema.plugin(mongoosePaginate);
+
+module.exports  = mongoose.model('Product', productSchema, collection);

@@ -1,0 +1,38 @@
+<h1>{{title}}</h1>
+
+{{#if payload.length}}
+<ul class="product-list">
+    {{#each payload}}
+    <li class="product-item">
+        <div class="product-title">{{this.title}}</div>
+        <div class="product-description">{{this.description}}</div>
+        <div class="product-price">Price: ${{this.price}}</div>
+        <div class="product-stock">Stock: {{this.stock}}</div>
+        <div class="product-category">Category: {{this.category}}</div>
+        <form action="/add-to-cart" method="post">
+            <input type="hidden" name="productId" value="{{this.id}}">
+            <button class="submit-btn" type="submit">Add to Cart</button>
+        </form>
+    </li>
+    {{/each}}
+</ul>
+
+<p>Current page: {{page}}</p>
+
+<div class="pagination">
+    {{#if hasPrevPage}}
+    <div class="pagination-item">
+        <a href="/products?page={{prevPage}}" class="pagination-link">Prev</a>
+    </div>
+    {{/if}}
+
+    {{#if hasNextPage}}
+    <div class="pagination-item">
+        <a href="/products?page={{nextPage}}" class="pagination-link">Next</a>
+    </div>
+    {{/if}}
+</div>
+
+{{else}}
+<p>No products found</p>
+{{/if}}
