@@ -17,40 +17,41 @@ router.post('/', async (req, res) => {
 });
 
 
-router.get('/:cid', async (req, res) => {
-    try {
-        const cartManager = req.app.get('cartManager');
-        const cartId = req.params.cid;
-        const cart = await cartManager.getCart(cartId);
-        if (!cart) {
-            return res.status(404).json({ error: 'Cart not found' });
-        }
-        res.render('cart', {
-            cart
-        });
-    } catch (error) {
-        console.error('Error retrieving cart:', error);
-        res.status(500).json({ error: 'Error retrieving cart' });
-    }
-});
-
 // router.get('/:cid', async (req, res) => {
 //     try {
+//         const cartManager = req.app.get('cartManager');
 //         const cartId = req.params.cid;
-//         const cart = await Cart.findById(cartId).populate('products._id').lean();
+//         const cart = await cartManager.getCart(cartId);
+//         if (!cart) {
+//             return res.status(404).json({ error: 'Cart not found' });
+//         }
 //         res.render('cart', {
 //             cart
 //         });
 //     } catch (error) {
+//         console.error('Error retrieving cart:', error);
 //         res.status(500).json({ error: 'Error retrieving cart' });
 //     }
 // });
 
+router.get('/:cid', async (req, res) => {
+    try {
+        const cartId = req.params.cid;
+        const cart = await Cart.findById(cartId).populate('products._id').lean();
+        console.log(cart);
+        res.render('cart', {
+            cart
+        });
+    } catch (error) {
+        res.status(500).json({ error: 'Error retrieving cart' });
+    }
+});
+
 router.post('/:cid/product/:pid', async (req, res) => {
     try {
         const cartManager = req.app.get('cartManager');
-        const cartId = parseInt(req.params.cid);
-        const productId = parseInt(req.params.pid);
+        const cartId = req.params.cid;
+        const productId = req.params.pid;
         const { quantity } = req.body;
         await cartManager.addProductToCart(cartId, productId, quantity);
         res.status(201).json({ message: 'Product successfully added to cart'})

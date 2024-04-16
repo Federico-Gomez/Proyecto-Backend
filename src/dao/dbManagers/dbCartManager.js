@@ -57,8 +57,8 @@ class CartManager {
             await this.createCart();
             cart = await Cart.findOne({ _id: cid });
         }
-           
-            const existingProductIndex = cart.products.findIndex(p => p._id === pid);
+           console.log(cart);
+            const existingProductIndex = cart.products.findIndex(p => p._id.toString() === pid);
             console.log("EPIndex:" + existingProductIndex);
 
             if (existingProductIndex !== -1) {
