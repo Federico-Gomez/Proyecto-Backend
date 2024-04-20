@@ -1,3 +1,11 @@
 <div>
-    <h1>Hola, {{name}}</h1>
+    {{#if isLoggedIn}}
+    <a href="/profile">My Profile</a>
+    <a href="/api/sessions/logout">Logout</a>
+    {{/if}}
+
+    {{#if isNotLoggedIn}}
+    <a href="/login">Login</a>
+    <a href="/register">Register</a>
+    {{/if}}
 </div>

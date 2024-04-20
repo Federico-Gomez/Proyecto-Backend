@@ -1,5 +1,19 @@
 <h1>{{title}}</h1>
 
+{{#if isLoggedIn}}
+    {{#if isAdmin}}
+        <h3>Bienvenido Admin: {{email}} Role: {{role}}</h3>
+        <a href="/api/sessions/logout">Logout</a>
+        {{else}}
+            <h3>Bienvenido {{firstName}} {{lastName}} ({{email}}) - Role: {{role}}</h3>
+            <div>
+                <a href="/profile">My Profile</a>
+                <a href="/api/sessions/logout">Logout</a>
+            </div>
+    {{/if}}
+{{/if}}
+
+
 {{#if payload.length}}
 <ul class="product-list">
     {{#each payload}}

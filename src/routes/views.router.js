@@ -3,6 +3,8 @@ const { Router } = require('express');
 const { Server } = require('socket.io');
 const { Product } = require('../dao/models');
 const { Cart } = require('../dao/models');
+const { User } = require('../dao/models');
+const { userIsLoggedIn, userIsNotLoggedIn } = require('../middlewares/auth.middleware');
 
 const router = Router();
 
@@ -46,9 +48,40 @@ router.get('/users', (_, res) => {
 });
 
 router.get('/', (req, res) => {
+    const isLoggedIn = ![null, undefined].includes(req.session.user);
+
     res.render('index', {
-        title: 'My test webpage',
-        name: 'Tester'
+        title: 'Home',
+        isLoggedIn,
+        isNotLoggedIn: !isLoggedIn
+    });
+});
+
+router.get('/login', userIsNotLoggedIn, async (_, res) => {
+    res.render('login', {
+        title: 'Login'
+    });
+});
+
+router.get('/register', userIsNotLoggedIn, async (_, res) => {
+    res.render('register', {
+        title: 'Register'
+    });
+});
+
+router.get('/profile', userIsLoggedIn, async (req, res) => {
+    const idFromSession = req.session.user._id;
+
+    const user = await User.findOne({ _id: idFromSession });
+
+    res.render('profile', {
+        title: 'My profile',
+        user: {
+            firstName: user.firstName,
+            lastName: user.lastName,
+            age: user.age,
+            email: user.email
+        }
     });
 });
 
@@ -79,13 +112,6 @@ router.get('/validate', (_, res) => {
     });
 });
 
-router.get('/register', (_, res) => {
-    res.render('register', {
-        title: 'Registrar usuario',
-        styles: [],
-        scripts: []
-    });
-});
 
 router.get('/home', async (_, res) => {
     try {
@@ -195,6 +221,22 @@ router.post('/realtimecarts/products', async (req, res) => {
 
 router.get('/products', async (req, res) => {
     try {
+        const isLoggedIn = ![null, undefined].includes(req.session.user);
+        const isAdmin = req.session.user.role === 'admin';
+
+        let firstName = '';
+        let lastName = '';
+
+        if (isLoggedIn && !isAdmin) {
+            const userId = req.session.user._id;
+            const user = await User.findOne({ _id: userId });
+            firstName = user.firstName;
+            lastName = user.lastName;
+        } else if (isAdmin) {
+            firstName = 'Admin';
+            lastName = '';
+        }
+
         // Extract query parameters
         const { limit = 10, page = 1, sort, category } = req.query;
         console.log('Category:', category);
@@ -222,9 +264,17 @@ router.get('/products', async (req, res) => {
         // Perform paginated query for products
         const result = await Product.paginate(conditions, options);
         console.log(result);
+
         // Send response with the specified format
         res.render('products', {
             title: 'Product List',
+            isLoggedIn,
+            isAdmin,
+            firstName,
+            lastName,
+            email: req.session.user.email,
+            role: req.session.user.role,
+            isNotLoggedIn: !isLoggedIn,
             status: 'success',
             payload: result.docs,
             totalPages: result.totalPages,
@@ -235,13 +285,13 @@ router.get('/products', async (req, res) => {
             hasNextPage: result.hasNextPage,
             styles: ['products.css']
         });
+
     } catch (error) {
         // Error handling
         console.error('Error retrieving products:', error);
         res.status(500).json({ status: 'error', error: 'Error retrieving products.' });
     }
 });
-
 
 // router.delete('/realtimeproducts/pid', async (req, res) => {
 //     const productId = req.params.pid;

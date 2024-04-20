@@ -1,22 +1,21 @@
-<h2>Registro de usuario</h2>
+<h2>Register new user</h2>
 
-<form action="/api/users" method="post">
-    <label for="num">Ingrese sus datos:</label>
+<form action="/api/sessions/register" method="post" enctype="application/x-www-form-urlencoded">
 
-    <label for="firstname">Nombre:</label>
-    <input type="text" name="firstname" id="nombre">
+    <label for="firstName">First name:</label>
+    <input type="text" name="firstName" id="_f_name">
 
-    <label for="lastname">Apellido:</label>
-    <input type="text" name="lastname" id="apellido">
+    <label for="lastName">Last name:</label>
+    <input type="text" name="lastName" id="_l_name">
 
-    <label for="age">Edad:</label>
-    <input type="number" name="age" id="age">
+    <label for="age">Age:</label>
+    <input type="number" name="age" id="_age">
 
     <label for="email">Email:</label>
-    <input type="email" name="email" id="email">
+    <input type="email" name="email" id="_email">
 
     <label for="password">Password:</label>
-    <input type="password" name="password" id="password">
+    <input type="password" name="password" id="_pass">
 
-    <button type="submit" id="btn">Registrar</button>
+    <button type="submit" id="btn">Register</button>
 </form>

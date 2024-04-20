@@ -4,6 +4,7 @@ const handlebars = require('express-handlebars');
 const { Server } = require('socket.io');
 const { Message } = require('./dao/models');
 
+// Managers
 const FilesProductManager = require('./dao/fileManagers/productManager');
 const DbProductManager = require('./dao/dbManagers/dbProductManager');
 
@@ -14,11 +15,17 @@ const DbMessageManager = require('./dao/dbManagers/dbMessageManager');
 
 const app = express();
 
+// Sessions
+const sessionMiddleware = require('./session/mongoStorage');
+
 const productsRouter = require('./routes/products.router');
 const cartsRouter = require('./routes/carts.router');
 const viewsRouter = require('./routes/views.router');
 const usersRouter = require('./routes/users.router');
+const sessionsRouter = require('./routes/session.router');
 // const petsRouter = require('./routes/pets.router');
+
+app.use(sessionMiddleware);
 
 // Config de handlebars
 app.engine('handlebars', handlebars.engine());
@@ -33,6 +40,7 @@ app.use('/', viewsRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);
 app.use('/api/users', usersRouter);
+app.use('/api/sessions', sessionsRouter);
 // app.use('/api/pets', petsRouter);
 
 // const httpServer = app.listen(8080, () => {
