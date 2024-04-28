@@ -18,6 +18,12 @@ const app = express();
 // Sessions
 const sessionMiddleware = require('./session/mongoStorage');
 
+// Passport
+const passport = require('passport');
+const initializeStrategy = require('./config/passport.config');
+const initializeStrategyGitHub = require('./config/passport-github.config');
+
+// Routers
 const productsRouter = require('./routes/products.router');
 const cartsRouter = require('./routes/carts.router');
 const viewsRouter = require('./routes/views.router');
@@ -26,6 +32,11 @@ const sessionsRouter = require('./routes/session.router');
 // const petsRouter = require('./routes/pets.router');
 
 app.use(sessionMiddleware);
+
+initializeStrategy();
+initializeStrategyGitHub();
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Config de handlebars
 app.engine('handlebars', handlebars.engine());

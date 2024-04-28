@@ -3,3 +3,4 @@ package-lock.json
 /node_modules
 /src/routes/pets.router.js
 /desafios
+/src/config/github.private.js

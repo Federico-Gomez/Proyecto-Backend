@@ -63,6 +63,12 @@ router.get('/login', userIsNotLoggedIn, async (_, res) => {
     });
 });
 
+router.get('/reset_password', userIsNotLoggedIn, async (_, res) => {
+    res.render('reset_password', {
+        title: 'Reset Password'
+    });
+});
+
 router.get('/register', userIsNotLoggedIn, async (_, res) => {
     res.render('register', {
         title: 'Register'
