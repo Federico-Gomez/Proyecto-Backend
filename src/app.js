@@ -3,6 +3,8 @@ const mongoose = require('mongoose');
 const handlebars = require('express-handlebars');
 const { Server } = require('socket.io');
 const { Message } = require('./dao/models');
+const { User } = require('./dao/models');
+const cookieParser = require('cookie-parser');
 
 // Managers
 const FilesProductManager = require('./dao/fileManagers/productManager');
@@ -29,12 +31,15 @@ const cartsRouter = require('./routes/carts.router');
 const viewsRouter = require('./routes/views.router');
 const usersRouter = require('./routes/users.router');
 const sessionsRouter = require('./routes/session.router');
+const initializeStrategyJWT = require('./config/passport-jwt.config');
 // const petsRouter = require('./routes/pets.router');
 
 app.use(sessionMiddleware);
+app.use(cookieParser());
 
 initializeStrategy();
 initializeStrategyGitHub();
+initializeStrategyJWT();
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -132,6 +137,7 @@ const main = async () => {
     const io = new Server(httpServer);
     app.set('ws', io);
 
+    // FileSystem Products
     // const productsfilename = `${__dirname}/../assets/Products.json`;
     // const productManager = new FilesProductManager(productsfilename);
     // await productManager.initialize();
@@ -141,9 +147,11 @@ const main = async () => {
 
     app.set('productManager', productManager);
 
+    // Faker para agregar productos
     // Código para agregar (n) productos fake a la collection 'products'
     // await productManager.addFakeProducts(30);
 
+    // FileSystem Carts
     // const cartsFilename = `${__dirname}/../assets/Carts.json`;
     // const cartManager = new FilesCartManager(cartsFilename);
     // await cartManager.initialize();

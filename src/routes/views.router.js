@@ -86,7 +86,8 @@ router.get('/profile', userIsLoggedIn, async (req, res) => {
             firstName: user.firstName,
             lastName: user.lastName,
             age: user.age,
-            email: user.email
+            email: user.email,
+            cartId: user.cartId
         }
     });
 });
@@ -225,6 +226,7 @@ router.post('/realtimecarts/products', async (req, res) => {
     }
 });
 
+// Para usar con sessions, se puede cambiar req.user por req.session.user
 router.get('/products', async (req, res) => {
     try {
         const isLoggedIn = ![null, undefined].includes(req.session.user);
@@ -232,12 +234,14 @@ router.get('/products', async (req, res) => {
 
         let firstName = '';
         let lastName = '';
+        let cartId = '';
 
         if (isLoggedIn && !isAdmin) {
             const userId = req.session.user._id;
             const user = await User.findOne({ _id: userId });
             firstName = user.firstName;
             lastName = user.lastName;
+            cartId = user.cartId;
         } else if (isAdmin) {
             firstName = 'Admin';
             lastName = '';
@@ -278,6 +282,7 @@ router.get('/products', async (req, res) => {
             isAdmin,
             firstName,
             lastName,
+            cartId,
             email: req.session.user.email,
             role: req.session.user.role,
             isNotLoggedIn: !isLoggedIn,

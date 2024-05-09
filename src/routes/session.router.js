@@ -2,6 +2,7 @@ const { Router } = require('express');
 const { User } = require('../dao/models/');
 const { hashPassword, isValidPassword } = require('../utils/hashing');
 const passport = require('passport');
+const { generateToken, verifyToken } = require('../utils/jwt');
 
 const router = Router();
 
@@ -35,13 +36,44 @@ const router = Router();
 //     res.redirect('/products');
 // });
 
+//Login con Passport Sessions
+
 router.post('/login', passport.authenticate('login', {failureRedirect: '/api/sessions/fail_login'}), async (req, res) => {
     console.log(req.body);
     
-    req.session.user = { email: req.user.email, _id: req.user._id.toString(), role: 'user' }
+    req.session.user = { email: req.user.email, _id: req.user._id.toString(), role: 'user' };
 
     res.redirect('/products');
 
+});
+
+// Login con JWT
+// router.post('/login', async (req, res) => {
+//     const { email, password } = req.body;
+//     const user = await User.findOne({ email });
+//     console.log(user);
+//     if (!user) {
+//         return res.status(400).json({ error: 'User not found'});
+//     }
+//     if (!isValidPassword(password, user.password)) {
+//         return res.status(401).json({ error: 'Invalid password'});
+//     }
+
+//     const credentials = { id: user._id.toString(), email: user.email, role: user.role };
+//     console.log(credentials);
+//     const accessToken = generateToken(credentials);
+//     res.cookie('accessToken', accessToken, { maxAge: 60*60*1000, httpOnly: true });
+//     // res.redirect('/products');
+//     res.status(200).json({ status: 'success' });
+// });
+
+router.get('/current', async (req, res) => {
+    return res.json(req.user);
+});
+
+router.get('/private', verifyToken, (req, res) => {
+    const { email } = req.authUser;
+    res.send(`Welcome: ${email}, this is private and protected content`)
 });
 
 router.get('/fail_login', (_, res) => {
@@ -52,7 +84,7 @@ router.get('/logout', (req, res) => {
     req.session.destroy(_ => {
         res.redirect('/');
     });
-})
+});
 
 // router.post('/register', async (req, res) => {
 //     console.log(req.body);
@@ -73,6 +105,8 @@ router.get('/logout', (req, res) => {
 //         return res.status(500).json({ error: 'error' });rs
 //     }
 // });
+
+// Register con Passport
 
 router.post('/register', passport.authenticate('register', {failureRedirect: '/api/sessions/failregister'}), async (req, res) => {
     console.log('Usuario:', req.user);
