@@ -19,4 +19,4 @@ cartSchema.virtual('id').get(function() {
     return this._id.toString();
 });
 
-module.exports  = mongoose.model(collection, cartSchema);
+module.exports  = mongoose.model('Cart', cartSchema, collection );
