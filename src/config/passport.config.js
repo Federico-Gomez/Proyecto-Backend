@@ -1,6 +1,6 @@
 const passport = require('passport');
 const { Strategy } = require('passport-local');
-const { User } = require('../dao/models');
+const { User, Cart } = require('../dao/models');
 const hashingUtils = require('../utils/hashing');
 
 const initializeStrategy = () => {
@@ -13,6 +13,7 @@ const initializeStrategy = () => {
         const { firstName, lastName, age, email } = req.body;
 
         try {
+            const cart = await Cart.create({ products: [], text: 'New cart' });
             const user = await User.findOne({ email: username });
             if (user) {
                 //error, usaurio con ese email ya existe
@@ -24,7 +25,8 @@ const initializeStrategy = () => {
                 lastName,
                 age: +age,
                 email,
-                password: hashingUtils.hashPassword(password)
+                password: hashingUtils.hashPassword(password),
+                cartId: cart._id
             }
 
             const result = await User.create(newUser);
