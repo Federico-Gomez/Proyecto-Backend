@@ -1,15 +1,15 @@
 const passport = require('passport');
 const { Strategy } = require('passport-github2');
 const { User } = require('../dao/models');
-const hashingUtils = require('../utils/hashing');
-const { clientID, clientSecret, callbackURL } = require('./github.private');
+// const { clientID, clientSecret, callbackURL } = require('./github.private');
+const config = require('../../config');
 
 const initializeStrategyGitHub = () => {
 
     passport.use('github', new Strategy({
-        clientID,
-        clientSecret,
-        callbackURL
+        clientID: config.GH_CLIENT_ID,
+        clientSecret: config.GH_CLIENT_SECRET,
+        callbackURL: config.GH_CALLBACK_URL
     }, async (_accessToken, _refreshToken, profile, done) => {
         try {
             console.log('GitHub profile: ', profile);

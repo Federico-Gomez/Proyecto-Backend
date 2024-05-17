@@ -47,7 +47,7 @@ router.post('/login', passport.authenticate('login', {failureRedirect: '/api/ses
 
 });
 
-// Login con JWT
+// // Login con JWT
 // router.post('/login', async (req, res) => {
 //     const { email, password } = req.body;
 //     const user = await User.findOne({ email });
@@ -62,6 +62,7 @@ router.post('/login', passport.authenticate('login', {failureRedirect: '/api/ses
 //     const credentials = { id: user._id.toString(), email: user.email, role: user.role };
 //     console.log(credentials);
 //     const accessToken = generateToken(credentials);
+//     console.log('Access token: ' + accessToken);
 //     res.cookie('accessToken', accessToken, { maxAge: 60*60*1000, httpOnly: true });
 //     // res.redirect('/products');
 //     res.status(200).json({ status: 'success' });

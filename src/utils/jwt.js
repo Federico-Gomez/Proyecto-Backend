@@ -1,10 +1,10 @@
 const jwt = require('jsonwebtoken');
-
-const PRIVATE_KEY = 'claveprivadajwtasasecret';
+const config = require('../../config');
+//const PRIVATE_KEY = 'claveprivadajwtasasecret';
 
 
 const generateToken = user => {
-        const token = jwt.sign({ user }, PRIVATE_KEY, { expiresIn: '48h' });
+        const token = jwt.sign({ user }, config.PRIVATE_KEY, { expiresIn: '48h' });
         return token;
     }
 
@@ -15,7 +15,7 @@ const verifyToken = (req, res, next) => {
         }
 
         const [, token] = authHeader.split(' ');
-        jwt.verify(token, PRIVATE_KEY, (error, signedPayload) => {
+        jwt.verify(token, config.PRIVATE_KEY, (error, signedPayload) => {
             if (error) {
                 return res.status(401).json({ error: 'Invalid access token' });
             }
@@ -25,4 +25,4 @@ const verifyToken = (req, res, next) => {
         });
     }
 
-module.exports = { generateToken, verifyToken, secret: PRIVATE_KEY};
+module.exports = { generateToken, verifyToken, secret: config.PRIVATE_KEY};

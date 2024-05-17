@@ -2,9 +2,9 @@ const express = require('express');
 const mongoose = require('mongoose');
 const handlebars = require('express-handlebars');
 const { Server } = require('socket.io');
-const { Message } = require('./dao/models');
-const { User } = require('./dao/models');
 const cookieParser = require('cookie-parser');
+const config = require('../config');
+console.log(config);
 
 // Managers
 const FilesProductManager = require('./dao/fileManagers/productManager');
@@ -119,7 +119,7 @@ app.use('/api/sessions', sessionsRouter);
 const main = async () => {
 
     await mongoose.connect(
-        'mongodb+srv://fedehgz:Amard0nandShem1n@ecommerce.nojdknt.mongodb.net/?retryWrites=true&w=majority'
+        config.MONGO_URI
         // 'mongodb://127.0.0.1:27017/'
         ,
 
@@ -130,8 +130,8 @@ const main = async () => {
     );
 
     // CON WEB SOCKET
-    const httpServer = app.listen(8080, () => {
-        console.log('Server ready! Listening on PORT 8080');
+    const httpServer = app.listen(config.PORT, () => {
+        console.log('Server ready!');
     });
 
     const io = new Server(httpServer);
@@ -165,58 +165,58 @@ const main = async () => {
 
     app.set('messageManager', messageManager);
 
-    // Array de mensajes para el chat
-    const messageHistory = [];
+    // // CHAT
+    // const messageHistory = [];
 
-    io.on('connection', (clientSocket) => {
-        console.log(`Client connected, ID: ${clientSocket.id}`);
+    // io.on('connection', (clientSocket) => {
+    //     console.log(`Client connected, ID: ${clientSocket.id}`);
 
-        // Escuchar evento 'deleteProduct' emitido por el cliente
-        clientSocket.on('deleteProduct', async (productId) => {
-            try {
-                const id = productId;
-                // const id = parseInt(productId);
-                // if (isNaN(id)) {
-                //     throw new Error('Invalid productId: ' + productId);
-                // }
+    //     // Escuchar evento 'deleteProduct' emitido por el cliente
+    //     clientSocket.on('deleteProduct', async (productId) => {
+    //         try {
+    //             const id = productId;
+    //             // const id = parseInt(productId);
+    //             // if (isNaN(id)) {
+    //             //     throw new Error('Invalid productId: ' + productId);
+    //             // }
 
-                // Borrar producto por ID
-                await productManager.deleteProduct(id);
+    //             // Borrar producto por ID
+    //             await productManager.deleteProduct(id);
 
-                // Emitir evento 'productDeleted' a los clientes
-                io.emit('productDeleted', id);
-                console.log('Product deleted:', id);
-            } catch (error) {
-                console.error('Error deleting product:', error);
-            }
-        });
+    //             // Emitir evento 'productDeleted' a los clientes
+    //             io.emit('productDeleted', id);
+    //             console.log('Product deleted:', id);
+    //         } catch (error) {
+    //             console.error('Error deleting product:', error);
+    //         }
+    //     });
 
-        // Enviar todos los mensajes del chat a los usuarios que se conecten
-        for (const data of messageHistory) {
-            clientSocket.emit('message', data);
-        }
+    //     // Enviar todos los mensajes del chat a los usuarios que se conecten
+    //     for (const data of messageHistory) {
+    //         clientSocket.emit('message', data);
+    //     }
 
-        clientSocket.on('message', async (data) => {
-            messageHistory.push(data);
-            try {
-                // const message = new Message(data);
-                // await message.save();
-                // console.log('Message saved to database:', message);
-                const { username, message } = data;
-                await messageManager.saveMessage(username, message);
-                console.log('Message saved successfully:', data);
-            } catch (error) {
-                console.error('Error saving message:', error);
-                throw error;
-            }
-            io.emit('message', (data));
-        });
+    //     clientSocket.on('message', async (data) => {
+    //         messageHistory.push(data);
+    //         try {
+    //             // const message = new Message(data);
+    //             // await message.save();
+    //             // console.log('Message saved to database:', message);
+    //             const { username, message } = data;
+    //             await messageManager.saveMessage(username, message);
+    //             console.log('Message saved successfully:', data);
+    //         } catch (error) {
+    //             console.error('Error saving message:', error);
+    //             throw error;
+    //         }
+    //         io.emit('message', (data));
+    //     });
 
-        clientSocket.on('user-connected', (username) => {
-            // Notificar a los demás que se ha conectado un nuevo usuario al chat
-            clientSocket.broadcast.emit('user-joined-chat', username);
-        });
-    });
+    //     clientSocket.on('user-connected', (username) => {
+    //         // Notificar a los demás que se ha conectado un nuevo usuario al chat
+    //         clientSocket.broadcast.emit('user-joined-chat', username);
+    //     });
+    // });
 
     // SIN WEB SOCKET
     // app.listen(8080, () => {

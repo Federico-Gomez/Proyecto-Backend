@@ -1,4 +1,4 @@
-// // JS del lado del client (browser)
+// // JS del lado del cliente (browser)
 
 // const socket = io();
 

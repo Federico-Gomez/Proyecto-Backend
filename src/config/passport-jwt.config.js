@@ -15,7 +15,6 @@ const initializeStrategyJWT = () => {
 
     }, async (jwtPayload, done) => {
         try {
-            console.log(jwtPayload.user);
             return done(null, jwtPayload.user);
         } catch (error) {
             done(error);
