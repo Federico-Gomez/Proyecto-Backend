@@ -4,3 +4,5 @@ package-lock.json
 /src/routes/pets.router.js
 /desafios
 /src/config/github.private.js
+.env.dev
+.env.prod

@@ -1,6 +1,17 @@
 const dotenv = require('dotenv');
+const { Command } = require('commander');
 
-dotenv.config();
+const command = new Command();
+command.option('-m, --mode <mode>', 'Modo de ejecución', 'dev');
+command.parse();
+
+const options = command.opts();
+
+const environment = options.mode;
+
+dotenv.config({
+    path: environment === 'prod' ? '.env.prod' : '.env.dev'
+});
 
 module.exports = {
     MONGO_URI: process.env.MONGO_URI,

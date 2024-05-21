@@ -1,7 +1,5 @@
 const jwt = require('jsonwebtoken');
 const config = require('../../config');
-//const PRIVATE_KEY = 'claveprivadajwtasasecret';
-
 
 const generateToken = user => {
         const token = jwt.sign({ user }, config.PRIVATE_KEY, { expiresIn: '48h' });

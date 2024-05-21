@@ -7,13 +7,13 @@ const config = require('../config');
 console.log(config);
 
 // Managers
-const FilesProductManager = require('./dao/fileManagers/productManager');
-const DbProductManager = require('./dao/dbManagers/dbProductManager');
+const FilesProductManager = require('./dao/fileDAO/productManager');
+const DbProductManager = require('./dao/dbDAO/dbProductManager');
 
-const FilesCartManager = require('./dao/fileManagers/cartManager');
-const DbCartManager = require('./dao/dbManagers/dbCartManager');
+const FilesCartManager = require('./dao/fileDAO/cartManager');
+const DbCartManager = require('./dao/dbDAO/dbCartManager');
 
-const DbMessageManager = require('./dao/dbManagers/dbMessageManager');
+const DbMessageManager = require('./dao/dbDAO/dbMessageManager');
 
 const app = express();
 
@@ -24,6 +24,7 @@ const sessionMiddleware = require('./session/mongoStorage');
 const passport = require('passport');
 const initializeStrategy = require('./config/passport.config');
 const initializeStrategyGitHub = require('./config/passport-github.config');
+const initializeStrategyJWT = require('./config/passport-jwt.config');
 
 // Routers
 const productsRouter = require('./routes/products.router');
@@ -31,7 +32,6 @@ const cartsRouter = require('./routes/carts.router');
 const viewsRouter = require('./routes/views.router');
 const usersRouter = require('./routes/users.router');
 const sessionsRouter = require('./routes/session.router');
-const initializeStrategyJWT = require('./config/passport-jwt.config');
 // const petsRouter = require('./routes/pets.router');
 
 app.use(sessionMiddleware);
@@ -119,9 +119,7 @@ app.use('/api/sessions', sessionsRouter);
 const main = async () => {
 
     await mongoose.connect(
-        config.MONGO_URI
-        // 'mongodb://127.0.0.1:27017/'
-        ,
+        config.MONGO_URI,
 
         {
             dbName: 'ecommerce'

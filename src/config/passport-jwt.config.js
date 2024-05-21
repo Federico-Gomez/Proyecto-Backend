@@ -1,7 +1,6 @@
 const passport = require('passport');
 const { Strategy, ExtractJwt } = require('passport-jwt');
 const { User } = require('../dao/models');
-const hashingUtils = require('../utils/hashing');
 const { secret } = require('../utils/jwt');
 
 const cookieExtractor = req => req && req.cookies ? req.cookies['accessToken'] : null;
