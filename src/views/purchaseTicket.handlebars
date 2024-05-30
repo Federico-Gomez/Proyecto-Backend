@@ -1,0 +1,57 @@
+{{#if success}}
+<h1>Purchase Ticket</h1>
+    <div class="container">
+        <h2>Ticket Information</h2>
+        <p><strong>Code:</strong> {{ticket.code}}</p>
+        <p><strong>Purchaser:</strong> {{ticket.purchaser}}</p>
+        <p><strong>Date:</strong> {{ticket.purchase_datetime}}</p>
+        <p><strong>Total Amount:</strong> ${{ticket.amount}}</p>
+    </div>
+
+    {{#if purchasedProducts.length}}
+        <div class="container">
+            <h1>Purchased Products</h1>
+                <ul>
+                {{#each purchasedProducts}}
+                    <li>
+                        <p>Product: {{productId}}</p>
+                        <p>Quantity: {{quantity}}</p>
+                    </li>
+                {{/each}}
+                </ul>
+        </div>
+    {{/if}}
+
+    {{#if pendingStockProducts.length}}
+        <div class="container">
+            <h1>Out of Stock Products</h1>
+                <ul>
+                {{#each pendingStockProducts}}
+                    <li>
+                        <p>Product ID: {{productId}}</p>
+                    </li>
+                {{/each}}
+                </ul>
+        </div>
+    {{/if}}  
+
+{{else}}
+
+    <h3>{{message}}</h3>
+    <div class="container">
+        <h1>Out of Stock Products</h1>
+        <ul>
+            {{#each insufficientStockProducts}}
+            <li>
+                <p>Product ID: {{this._id._id}}</p>
+            </li>
+            {{/each}}
+        </ul>
+    </div>
+{{/if}}
+
+<div class="ticket-actions">
+    <a href="/products" class="back-to-products">Back to Products</a>
+</div>
+
+

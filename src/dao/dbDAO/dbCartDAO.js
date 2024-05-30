@@ -1,7 +1,7 @@
 const { Cart } = require('../models');
-const mongoose = require('mongoose');
+const { Product } = require('../models');
 
-class CartManager {
+class CartDAO {
     #carts
 
     constructor() {
@@ -16,7 +16,7 @@ class CartManager {
     //          console.log("maxId:" + maxId);
     //  }
 
-    async prepare() { 
+    async prepare() {
         // Chequear que la conexión existe y está funcionando
         if (Cart.db.readyState !== 1) {
             throw new Error('must connect to mongodb!')
@@ -25,11 +25,12 @@ class CartManager {
 
     async createCart() {
         try {
-            
-            await Cart.create({
+
+            const cart = await Cart.create({
                 products: [],
                 text: 'for testing update endpoints'
             });
+            return cart._id;
 
         } catch (error) {
             console.error("Error creating Cart:", error);
@@ -43,7 +44,7 @@ class CartManager {
             const cart = await Cart.findOne({ _id: cid }).populate('products._id').lean();
 
             return cart ? cart : null;
-            
+
         } catch (error) {
             console.error("Error obtaining product by ID:", error);
             return null;
@@ -52,12 +53,12 @@ class CartManager {
 
     async addProductToCart(cid, pid, quantity) {
         try {
-        let cart = await Cart.findOne({ _id: cid });
-        if (!cart) {
-            await this.createCart();
-            cart = await Cart.findOne({ _id: cid });
-        }
-           console.log(cart);
+            let cart = await Cart.findOne({ _id: cid });
+            if (!cart) {
+                await this.createCart();
+                cart = await Cart.findOne({ _id: cid });
+            }
+            console.log(cart);
             const existingProductIndex = cart.products.findIndex(p => p._id.toString() === pid);
             console.log("EPIndex:" + existingProductIndex);
 
@@ -86,9 +87,10 @@ class CartManager {
         }
     }
 
-    async updateCart(cid, updatedCart) {
+    async updateCart(cid, cartData) {
         try {
-            await Cart.updateOne({ _id: cid }, updatedCart);
+            const updatedCart = await Cart.updateOne({ _id: cid }, cartData);
+            return updatedCart;
         } catch (error) {
             console.error("Error updating cart:", error);
             throw error;
@@ -136,6 +138,44 @@ class CartManager {
             throw error;
         }
     }
+
+    async purchaseCart(cartId) {
+        console.log('Looking for cart with ID:', cartId);
+        // Obtener cart por su ID
+        const cart = await Cart.findById(cartId).populate('products._id');
+        if (!cart) {
+            throw new Error('Cart not found');
+        }
+
+        // Evaluar stock y modificar cantidades
+        const productsToPurchase = [];
+        const insufficientStockProducts = [];
+        for (const p of cart.products) {
+            const product = await Product.findById(p._id);
+            if (product.stock >= p.quantity) {
+                // Stock suficiente -> actualizar stock
+                product.stock -= p.quantity;
+                await product.save();
+                productsToPurchase.push(p);
+            } else {
+                // Stock insuficiente
+                insufficientStockProducts.push(p);
+            }
+        }
+
+        console.log(productsToPurchase);
+        console.log(insufficientStockProducts);
+        
+        // Quitar productos comprados del cart
+        cart.products = cart.products.filter(item => !productsToPurchase.find(p => p._id === item._id));
+        await cart.save();
+
+        return {
+            cart,
+            productsToPurchase,
+            insufficientStockProducts
+        }
+    }
 }
 
-module.exports = CartManager;
+module.exports = CartDAO;

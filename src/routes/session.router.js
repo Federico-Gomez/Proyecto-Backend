@@ -3,22 +3,25 @@ const { User } = require('../dao/models/');
 const { hashPassword, isValidPassword } = require('../utils/hashing');
 const passport = require('passport');
 const { generateToken, verifyToken } = require('../utils/jwt');
+const config = require('../../config');
+const { checkLoginType } = require('../middlewares/auth.middleware');
+const UserDTO = require('../utils/DTOs/userDTO');
 
 const router = Router();
 
 // router.post('/login', async (req, res) => {
 //     console.log(req.body);
 
-//     const { email, password } = req.body;
-//     if (!email || !password) {
-//         return res.status(400).json({ error: 'Invalid credentials' });
-//     }
+// const { email, password } = req.body;
+// if (!email || !password) {
+//     return res.status(400).json({ error: 'Invalid credentials' });
+// }
 
-//     // Chequeamos si el usuario es admin dependiendo de su email y password
-//     if (email === 'adminCoder@coder.com' && password === 'adminCod3r123') {
-//         req.session.user = { email, role: 'admin' };
-//         return res.redirect('/products');
-//     }
+// // Chequeamos si el usuario es admin dependiendo de su email y password
+// if (email === 'adminCoder@coder.com' && password === 'adminCod3r123') {
+//     req.session.user = { email, role: 'admin' };
+//     return res.redirect('/products');
+// }
 
 //     // Buscamos usuario en la DB
 //     const user = await User.findOne({ email });
@@ -38,14 +41,45 @@ const router = Router();
 
 //Login con Passport Sessions
 
-router.post('/login', passport.authenticate('login', {failureRedirect: '/api/sessions/fail_login'}), async (req, res) => {
+router.post('/login', checkLoginType, passport.authenticate('login', { failureRedirect: '/api/sessions/fail_login' }), async (req, res) => {
     console.log(req.body);
-    
-    req.session.user = { email: req.user.email, _id: req.user._id.toString(), role: 'user' };
 
+    req.session.user = { email: req.user.email, _id: req.user._id.toString(), role: 'user' };
     res.redirect('/products');
 
 });
+
+// // Ruta de login para admin y user con implementación manual de passport.authenticae()
+// router.post('/login', async (req, res, next) => {
+//     const { email, password, login_type } = req.body;
+
+//     if (login_type === 'admin') {
+//         // Check admin credentials using environment variables
+//         if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
+//             req.session.user = { email, role: 'admin' };
+//             return res.redirect('/products');
+//         } else {
+//             return res.status(401).send('Invalid admin credentials');
+//         }
+//     } else {
+//         // Use passport for regular user login
+//         passport.authenticate('login', (err, user, info) => {
+//             if (err) {
+//                 return next(err);
+//             }
+//             if (!user) {
+//                 return res.redirect('/api/sessions/fail_login');
+//             }
+//             req.logIn(user, (err) => {
+//                 if (err) {
+//                     return next(err);
+//                 }
+//                 req.session.user = { email: user.email, _id: user._id.toString(), role: 'user' };
+//                 return res.redirect('/products');
+//             });
+//         })(req, res, next);
+//     }
+// });
 
 // // Login con JWT
 // router.post('/login', async (req, res) => {
@@ -69,7 +103,23 @@ router.post('/login', passport.authenticate('login', {failureRedirect: '/api/ses
 // });
 
 router.get('/current', async (req, res) => {
-    return res.json(req.user);
+    if (!req.user && !req.session.user) {
+        return res.status(401).json({ error: 'User not authenticated' });
+    }
+
+    let userDTO;
+    if (req.session.user && req.session.user.role === 'admin') {
+        // Admin user
+        userDTO = {
+            email: req.session.user.email,
+            role: req.session.user.role
+        };
+    } else {
+        // Regular user
+        userDTO = new UserDTO(req.user);
+    }
+
+    return res.json(userDTO);
 });
 
 router.get('/private', verifyToken, (req, res) => {
@@ -109,7 +159,7 @@ router.get('/logout', (req, res) => {
 
 // Register con Passport
 
-router.post('/register', passport.authenticate('register', {failureRedirect: '/api/sessions/failregister'}), async (req, res) => {
+router.post('/register', passport.authenticate('register', { failureRedirect: '/api/sessions/failregister' }), async (req, res) => {
     console.log('Usuario:', req.user);
     res.redirect('/');
 });
@@ -137,7 +187,7 @@ router.post('/reset_password', async (req, res) => {
     res.redirect('/');
 });
 
-router.get('/github', passport.authenticate('github', { scope: ['user:email'] }), async (req, res) => {});
+router.get('/github', passport.authenticate('github', { scope: ['user:email'] }), async (req, res) => { });
 
 router.get('/githubcallback', passport.authenticate('github', { failureRedirect: '/' }), async (req, res) => {
     req.session.user = req.user;

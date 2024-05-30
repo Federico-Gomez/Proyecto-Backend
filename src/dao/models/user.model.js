@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const Cart = require('./cart.model');
 
 const collection = 'users';
 

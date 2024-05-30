@@ -1,11 +1,21 @@
 <div>
-    <form action="/api/sessions/login" method="post" enctype="application/x-www-form-urlencoded">
+    <form id="login-form" action="/api/sessions/login" method="post" enctype="application/x-www-form-urlencoded">
         <label for="_email">Email:</label>
         <input type="email" name="email" id="_email">
 
         <label for="_pass">Password:</label>
         <input type="password" name="password" id="_pass">
 
-        <button type="submit">Login</button>
+        <input type="hidden" name="login_type" id="login_type" value="user">
+
+        <button type="submit">User Login</button>
+        <button type="button" onclick="setAdminLogin()">Admin Login</button>
     </form>
 </div>
+
+<script>
+function setAdminLogin() {
+    document.getElementById('login_type').value = 'admin';
+    document.getElementById('login-form').submit();
+}
+</script>

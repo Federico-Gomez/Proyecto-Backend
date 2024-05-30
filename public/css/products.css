@@ -40,6 +40,21 @@
     color: #000;
 }
 
+.delete-product {
+    text-decoration: none;
+    text-align: center;
+    padding: 4px 10px;
+    border: 1px solid #ccc;
+    color: #333;
+    width: 120px;
+    margin-top: 20px;
+}
+
+.delete-product:hover {
+    background-color: #f0f0f0;
+    color: #000;
+}
+
 .pagination {
     width: 400px;
 }

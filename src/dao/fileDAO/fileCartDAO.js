@@ -1,6 +1,6 @@
 const fs = require('fs').promises;
 
-class CartManager {
+class CartDAO {
     #carts
 
     constructor(filePath) {
@@ -171,4 +171,4 @@ class CartManager {
 
 // main();
 
-module.exports = CartManager;
+module.exports = CartDAO;

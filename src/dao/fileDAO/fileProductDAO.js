@@ -1,6 +1,6 @@
 const fs = require('fs').promises;
 
-class ProductManager {
+class ProductDAO {
     #products;
 
     constructor(filePath) {
@@ -206,4 +206,4 @@ class ProductManager {
 
 // main();
 
-module.exports = ProductManager;
+module.exports = ProductDAO;

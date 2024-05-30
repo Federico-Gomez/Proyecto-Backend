@@ -1,16 +1,4 @@
-<h1>Lista de Productos en Tiempo Real</h1>
-
-<div>
-    <ul id="product-list">
-        {{#each products}}
-        <li id="{{this.id}}">
-            {{this.title}} - {{this.description}} - {{this.price}} - {{this.thumbnails}} - {{this.code}} -
-            {{this.stock}} - {{this.category}}
-            <button class="delete-product" data-product-id="{{this.id}}">Eliminar</button>
-        </li>
-        {{/each}}
-    </ul>
-</div>
+<h1>New Product form</h1>
 
 <div>
     <form id="add-product-form" action="/realtimeproducts" method="post">
@@ -37,4 +25,25 @@
 
         <button type="submit">Agregar Producto</button>
     </form>
+</div>
+
+<h1>Lista de Productos en Tiempo Real</h1>
+
+<div>
+    <ul id="product-list" class="product-list">
+        {{#each products}}
+        <li id="{{this.id}}" class="product-item">
+            <div class="product-title">{{this.title}}</div>
+            <div class="product-description">{{this.description}}</div>
+            <div class="product-price">Price: ${{this.price}}</div>
+            <div class="product-stock">Stock: {{this.stock}}</div>
+            <div class="product-category">Category: {{this.category}}</div>
+            <form action="/add-to-cart" method="post">
+                <input type="hidden" name="productId" value="{{this.id}}">
+                <button class="submit-btn" type="submit">Add to Cart</button>
+            </form>
+            <button class="delete-product" data-product-id="{{this.id}}">Eliminar</button>
+        </li>
+        {{/each}}
+    </ul>
 </div>

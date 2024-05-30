@@ -1,6 +1,6 @@
 const { Message } = require('../models');
 
-class MessageManager {
+class MessageDAO {
 
     async saveMessage(username, message) {
         try {
@@ -23,4 +23,4 @@ class MessageManager {
     }
 }
 
-module.exports = MessageManager;
+module.exports = MessageDAO;

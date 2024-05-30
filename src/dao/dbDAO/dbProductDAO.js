@@ -1,7 +1,7 @@
 const { Product } = require('../models');
 const { faker } = require('@faker-js/faker');
 
-class ProductManager {
+class ProductDAO {
     #products
 
     constructor() {
@@ -158,9 +158,10 @@ class ProductManager {
         try {
             // Update the product directly in the database
             const updatedProduct = await Product.findByIdAndUpdate(id, updatedFields, { new: true });
-    
+            
             if (updatedProduct) {
                 console.log("Product updated:", updatedProduct);
+                return updatedProduct.toObject();
             } else {
                 console.error("Error finding or updating product.");
             }
@@ -178,4 +179,4 @@ class ProductManager {
     }
 }
 
-module.exports = ProductManager;
+module.exports = ProductDAO;

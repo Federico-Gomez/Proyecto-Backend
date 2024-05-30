@@ -1,4 +1,4 @@
-<h1>Cart</h1>
+<h1>My Cart</h1>
 
 <div>
     <h3>Cart Items</h3>
@@ -7,14 +7,18 @@
         <li>
             <h4>{{this._id.title}}</h4>
             <p>Description: {{this._id.description}}</p>
-            <p>Price: {{this._id.price}}</p>
+            <p>Price: ${{this._id.price}}</p>
             <p>Thumbnails: {{this._id.thumbnails}}</p>
             <p>Code: {{this._id.code}}</p>
             <p>Stock: {{this._id.stock}}</p>
             <p>Category: {{this._id.category}}</p>
             <p>Quantity: {{this.quantity}}</p>
+            <button class="btn delete-product-btn" data-cart-id="{{../cart._id}}" data-product-id="{{this._id._id}}">Delete product</button>
         </li>
         {{/each}}
+        <div class="cart-actions" data-cart-id="{{cart._id}}">
+            <a href="/products" class="btn">Continue Shopping</a>
+            <button class="btn checkout-btn" data-cart-id="{{cart._id}}">Purchase Cart</button>
+        </div>
     </ul>
 </div>
-

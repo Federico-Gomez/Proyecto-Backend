@@ -17,23 +17,11 @@ Swal.fire({
 }).then(result => {
     if (result.isConfirmed) {
         username = result.value;
-        // socket.emit('user-connected', username);
-        Swal.fire({
-            title: 'Ingresa tu email',
-            input: 'email',
-            inputValidator: (value) => {
-                return !value && '¡Debes ingresar un email válido!'
-            },
-            allowOutsideClick: false
-        }).then((result) => {
-            if (result.isConfirmed) {
-                email = result.value;
-                console.log(`Usuario identificado como: ${username}, Email: ${email}`);
 
-                // Notificamos la conxión al servidor
-                socket.emit('user-connected', username);
-            }
-        });
+        console.log(`Usuario identificado como: ${username}`);
+
+        // Notificamos la conxión al servidor
+        socket.emit('user-connected', username);
     }
 });
 

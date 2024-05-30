@@ -2,6 +2,7 @@ const passport = require('passport');
 const { Strategy } = require('passport-local');
 const { User, Cart } = require('../dao/models');
 const hashingUtils = require('../utils/hashing');
+const config = require('../../config');
 
 const initializeStrategy = () => {
 
@@ -60,7 +61,7 @@ const initializeStrategy = () => {
             if (!hashingUtils.isValidPassword(password, user.password)) {
                 return done(null, false);
             }
-            
+
             return done(null, user);
 
         } catch (error) {
@@ -69,13 +70,31 @@ const initializeStrategy = () => {
         }
     }));
 
+    // passport.use('admin', new Strategy({
+    //     usernameField: 'email'
+    // }, async (username, password, done) => {
+    //     try {
+    //         if (username === config.ADMIN_EMAIL && password === config.ADMIN_PASSWORD) {
+    //             const adminUser = {
+    //                 email: config.ADMIN_EMAIL,
+    //                 role: 'admin'
+    //             };
+    //             return done(null, adminUser);
+    //         } else {
+    //             return done(null, false);
+    //         }
+    //     } catch (error) {
+    //         return done('Invalid credentials: ' + error);
+    //     }
+    // }));
+
     passport.serializeUser((user, done) => {
-        console.log('Serialized:', user );
+        console.log('Serialized:', user);
         done(null, user._id);
     });
 
     passport.deserializeUser(async (id, done) => {
-        console.log('Deserialized:', id );
+        console.log('Deserialized:', id);
         const user = await User.findById(id);
         done(null, user);
     });

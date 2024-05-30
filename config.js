@@ -21,5 +21,12 @@ module.exports = {
     PRIVATE_KEY: process.env.PRIVATE_KEY,
     GH_CLIENT_ID: process.env.GH_CLIENT_ID,
     GH_CLIENT_SECRET: process.env.GH_CLIENT_SECRET,
-    GH_CALLBACK_URL: process.env.GH_CALLBACK_URL
+    GH_CALLBACK_URL: process.env.GH_CALLBACK_URL,
+    GMAIL_ACCOUNT: process.env.GMAIL_ACCOUNT,
+    GMAIL_PASSWORD: process.env.GMAIL_PASSWORD,
+    TWILIO_ACCOUNT_SID: process.env.TWILIO_ACCOUNT_SID,
+    TWILIO_AUTH_TOKEN: process.env.TWILIO_AUTH_TOKEN,
+    TWILIO_PHONE_NUMBER: process.env.TWILIO_PHONE_NUMBER,
+    ADMIN_EMAIL: process.env.ADMIN_EMAIL,
+    ADMIN_PASSWORD: process.env.ADMIN_PASSWORD
 }
