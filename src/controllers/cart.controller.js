@@ -46,19 +46,10 @@ module.exports = {
                 console.log('Ticket Data:', ticketData);
                 
                 const ticket = await ticketServices.createTicket(ticketData);
-                
-                // res.render('purchaseTicket', {
-                //     success: true,
-                //     ticket,
-                //     productsToPurchase,
-                //     insufficientStockProducts
-                // });
 
                 res.json({ 
                     success: true,
                     ticket,
-                    productsToPurchase,
-                    insufficientStockProducts 
                 });
 
                 // return res.status(200).json({ status: 'success', ticket });

@@ -7,6 +7,7 @@ const { User } = require('../dao/models');
 const { userIsLoggedIn, userIsNotLoggedIn, isAdmin, isAuthenticated, isNotAdmin } = require('../middlewares/auth.middleware');
 const { productServices, cartServices, ticketServices } = require('../services');
 const UserDTO = require('../utils/DTOs/userDTO');
+const ticketController = require('../controllers/ticket.controller');
 
 const createRouter = async () => {
     
@@ -416,34 +417,7 @@ router.post('/add-to-cart', isAuthenticated, async (req, res) => {
 //     }
 // });
 
-router.get('/:tid', isAuthenticated, async (req, res, next) => {
-    try {
-        const ticketId = req.params.tid;
-        const ticket = await ticketServices.getTicket(ticketId);
-
-        if (!ticket) {
-            return res.status(404).send({ message: 'Ticket not found' });
-        }
-
-        const pendingStockProducts = ticket.pendingStockProducts || [];
-        const purchasedProducts = ticket.purchasedProducts || [];
-
-        console.log('Purchased:', purchasedProducts);
-        console.log('Insufficient Stock:', pendingStockProducts);
-
-        res.render('purchaseTicket', {
-            success: true,
-            ticket,
-            purchasedProducts,
-            pendingStockProducts,
-            styles: ['ticket.css']
-        });
-
-    } catch (error) {
-        console.error('Error fetching ticket:', error);
-        next(error); // Pass the error to the error handling middleware
-    }
-});
+router.get('/:tid', isAuthenticated, ticketController.getTicket);
 
     return router;
 }

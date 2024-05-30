@@ -16,13 +16,22 @@ module.exports = {
             const ticket = await ticketServices.getTicket(ticketId);
 
             if (!ticket) {
-                return ticket === false
-                    ? res.sendError({ message: 'Not found' }, 404)
-                    : res.sendError({ message: 'Something went wrong' }, 500);
+                return res.status(404).send({ message: 'Ticket not found' });
             }
 
-            // Send response without rendering view
-            res.status(200).send(ticket);
+            const pendingStockProducts = ticket.pendingStockProducts || [];
+            const purchasedProducts = ticket.purchasedProducts || [];
+
+            console.log('Purchased:', purchasedProducts);
+            console.log('Insufficient Stock:', pendingStockProducts);
+
+            res.render('purchaseTicket', {
+                success: true,
+                ticket,
+                purchasedProducts,
+                pendingStockProducts,
+                styles: ['ticket.css']
+            });
 
         } catch (error) {
             console.error('Error in getTicket:', error);
