@@ -1,5 +1,5 @@
 const { Product } = require('../models');
-const { faker } = require('@faker-js/faker');
+const { fakerES: faker } = require('@faker-js/faker');
 
 class ProductDAO {
     #products
@@ -48,14 +48,15 @@ class ProductDAO {
         }
     }
 
-    async addFakeProducts(n) {
+    async createMockProducts(n) {
         try {
             const pickRandom = arr => arr[parseInt(Math.random() * arr.length)];
             const randomCategory = () => pickRandom(["Apparel", "Accessories", "Footwear"]);
 
+            const mockProducts = [];
             const NUM = n;
             for (let i = 0; i < NUM; i++) {
-                await Product.create({
+                const mockProduct = await Product.create({
                     title: faker.commerce.productName(),
                     description: faker.lorem.sentences(),
                     price: faker.commerce.price(),
@@ -64,14 +65,16 @@ class ProductDAO {
                     stock: faker.number.int({ min: 1, max: 100}),
                     category: randomCategory()
                 });
+
+                mockProducts.push(mockProduct);
             }
 
-            console.log('Products created!');
-
+            console.log('Products created!: ', mockProducts);
+            return mockProducts;
 
         } catch (error) {
-            console.error("Error adding product: ", error);
-            throw new Error("Error adding product: " + error.message);
+            console.error("Error adding products: ", error);
+            throw new Error("Error adding products: " + error.message);
         }
     }
 

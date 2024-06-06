@@ -6,6 +6,8 @@ const cookieParser = require('cookie-parser');
 const { configureCustomResponses } = require('./controllers/controller.utils');
 const cors = require('cors');
 const path = require('path');
+const compression = require('express-compression');
+const { errorHandler } = require('./services/errors/errorHandler');
 
 const config = require('../config');
 console.log(config);
@@ -36,6 +38,7 @@ const initializeStrategyJWT = require('./config/passport-jwt.config');
 // Routers
 const { createRouter: createProductsRouter } = require('./routes/products.router');
 const { createRouter: createCartsRouter } = require('./routes/carts.router');
+const { createRouter: createUsersRouter } = require('./routes/users.router');
 const { createRouter: createViewsRouter } = require('./routes/views.router');
 const { createRouter: createMessagesRouter } = require('./routes/messages.router');
 const usersRouter = require('./routes/users.router');
@@ -73,13 +76,21 @@ app.use(express.static(`${__dirname}/../public`));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use('/api/users', usersRouter);
 app.use('/api/sessions', sessionsRouter);
 // app.use('/api/pets', petsRouter);
 
 app.use((req, res, next) => {
     console.log('Request URL:', req.originalUrl);
     next();
+});
+
+app.use(compression({
+    brotli: { enabled: true, zlib: {} }
+}));
+app.get('/test-br', (req, res) => {
+
+    const response = 'Hi there! This is a very long message!\n'.repeat(10000);
+    res.send(response);
 });
 
 // const httpServer = app.listen(8080, () => {
@@ -150,8 +161,13 @@ const main = async () => {
     const cartsRouter = await createCartsRouter();
     app.use('/api/carts', cartsRouter);
 
+    const usersRouter = await createUsersRouter();
+    app.use('/api/users', usersRouter);
+
     const messagesRouter = await createMessagesRouter();
     app.use('/api/messages', messagesRouter);
+
+    app.use(errorHandler);
 
     await mongoose.connect(
         config.MONGO_URI,
@@ -179,10 +195,6 @@ const main = async () => {
     await productDAO.prepare();
 
     app.set('productDAO', productDAO);
-
-    // Faker para agregar productos
-    // Código para agregar (n) productos fake a la collection 'products'
-    // await productManager.addFakeProducts(30);
 
     // FileSystem Carts
     // const cartsFilename = `${__dirname}/../assets/Carts.json`;

@@ -2,9 +2,12 @@ const { Router } = require('express');
 const { Product } = require('../dao/models');
 const { productServices } = require('../services');
 const { isAdmin } = require('../middlewares/auth.middleware');
+const { invalidProductDataError}  = require('../services/errors/productError');
+const { CustomError } = require('../services/errors/CustomError');
+const { ErrorCodes } = require('../services/errors/errorCodes');
 
 const createRouter = async () => {
-    
+
     const router = Router();
 
     // router.get('/', async (req, res) => {
@@ -133,19 +136,29 @@ const createRouter = async () => {
         }
     });
 
-    router.post('/', isAdmin, async (req, res) => {
+    router.post('/', isAdmin, async (req, res, next) => {
         try {
             const { title, description, price, thumbnails, code, stock, category } = req.body;
             if (!title || !description || !code || !price || isNaN(stock) || stock < 0 || !category) {
-                return res.status(400).json({ error: 'All fields are required except thumbnails' });
+                const errorMessage = invalidProductDataError({ title, description, price, thumbnails, code, stock, category });
+                return next(CustomError.createError({
+                    name: 'InvalidProductDataError',
+                    cause: errorMessage,
+                    message: 'Invalid product data',
+                    code: ErrorCodes.INVALID_TYPES_ERROR
+                }));
             }
 
             // const productDAO = req.app.get('productDAO');
             await productServices.addProduct(title, description, price, thumbnails, code, stock, category);
-            res.status(201).json({ message: 'Product added successfully to cart' });
+            res.status(201).json({ message: 'Product added successfully to database' });
         } catch (error) {
-            res.status(500).json({ error: 'Error adding product to cart' });
-            console.log(error);
+            next(CustomError.createError({
+                name: 'RoutingError',
+                cause: error.message,
+                message: 'Error adding product to database',
+                code: ErrorCodes.ROUTING_ERROR
+            }));
         }
     });
 

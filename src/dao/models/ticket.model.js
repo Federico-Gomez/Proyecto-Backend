@@ -11,12 +11,14 @@ const ticketSchema = new mongoose.Schema({
     purchasedProducts: [
         {
             productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
-            quantity: { type: Number, required: true }
+            quantity: { type: Number, required: true },
+            name: { type: String }
         }
     ],
     pendingStockProducts: [
         {
             productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
+            name: { type: String }
         }
     ]
 });

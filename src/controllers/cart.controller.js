@@ -36,10 +36,12 @@ module.exports = {
                     code: generateUniqueCode(),
                     purchasedProducts: productsToPurchase.map(p => ({
                         productId: p._id._id,
-                        quantity: p.quantity
+                        quantity: p.quantity,
+                        name: p._id.title
                     })),
                     pendingStockProducts: insufficientStockProducts.map(p => ({
-                        productId: p._id._id
+                        productId: p._id._id,
+                        name: p._id.title
                     })),
                 };
 

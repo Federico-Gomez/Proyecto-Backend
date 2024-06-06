@@ -28,7 +28,7 @@ class CartDAO {
 
             const cart = await Cart.create({
                 products: [],
-                text: 'for testing update endpoints'
+                text: 'Text for testing update endpoints'
             });
             return cart._id;
 
@@ -163,8 +163,8 @@ class CartDAO {
             }
         }
 
-        console.log(productsToPurchase);
-        console.log(insufficientStockProducts);
+        console.log('Purchased: ' + productsToPurchase);
+        console.log('Out of Stock: ' + insufficientStockProducts);
         
         // Quitar productos comprados del cart
         cart.products = cart.products.filter(item => !productsToPurchase.find(p => p._id === item._id));

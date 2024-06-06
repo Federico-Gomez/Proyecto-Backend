@@ -38,7 +38,7 @@ const initializeStrategy = () => {
         } catch (error) {
 
             // Error inesperado
-            return done('Error al obtener el usuario: ' + error);
+            return done('Error al crear el usuario: ' + error);
         }
     }));
 

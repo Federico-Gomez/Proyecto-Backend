@@ -8,9 +8,11 @@ const { userIsLoggedIn, userIsNotLoggedIn, isAdmin, isAuthenticated, isNotAdmin 
 const { productServices, cartServices, ticketServices } = require('../services');
 const UserDTO = require('../utils/DTOs/userDTO');
 const ticketController = require('../controllers/ticket.controller');
+const productController = require('../controllers/product.controller');
+const { generateMockProduct, generateMockUser } = require('../utils/mocks/mockGenerator');
 
 const createRouter = async () => {
-    
+
     const router = Router();
 
     const users = [
@@ -31,6 +33,26 @@ const createRouter = async () => {
     router.use((req, _, next) => {
         req.wsServer = req.app.get('ws');
         next();
+    });
+
+    router.get('/simulatemockproducts', (req, res) => {
+        
+        const mockProducts = [];
+        for (let i = 0; i < 50; i++) {
+            mockProducts.push(generateMockProduct());
+        }
+
+        res.json(mockProducts);
+    });
+
+    router.get('/simulatemockusers', (req, res) => {
+        
+        const mockUsers = []
+            for (let i = 0; i < 50; i++) {
+                mockUsers.push(generateMockUser());
+            }
+
+        res.json(mockUsers);
     });
 
     router.get('/users', (_, res) => {
@@ -328,96 +350,98 @@ const createRouter = async () => {
         }
     });
 
-    
-router.get('/current', async (req, res) => {
-    if (!req.user && !req.session.user) {
-        return res.status(401).json({ error: 'User not authenticated' });
-    }
 
-    let userDTO;
-    if (req.session.user && req.session.user.role === 'admin') {
-        // Admin user
-        userDTO = {
-            email: req.session.user.email,
-            role: req.session.user.role
-        };
-    } else {
-        // Regular user
-        userDTO = new UserDTO(req.user);
-    }
-
-    return res.json(userDTO);
-});
-
-router.get('/create-product', isAdmin, async (_, res) => {
-    try {
-    
-        res.render('create-product', {
-            title: 'Create product',
-            styles: ['create-product.css']
-        });
-
-    } catch (error) {
-        res.status(500).json({ error: 'Error crear el producto' });
-    }
-});
-
-router.get('/update-product', isAdmin, async (_, res) => {
-    try {
-    
-        res.render('update-product', {
-            title: 'Update product',
-            styles: ['update-product.css']
-        });
-
-    } catch (error) {
-        res.status(500).json({ error: 'Error editar el producto' });
-    }
-});
-
-router.post('/add-to-cart', isAuthenticated, async (req, res) => {
-    try {
-        if (!req.session.user) {
-            return res.status(401).json({ message: 'You need to be logged in to purchase products' });
+    router.get('/current', async (req, res) => {
+        if (!req.user && !req.session.user) {
+            return res.status(401).json({ error: 'User not authenticated' });
         }
 
-        const userId = req.session.user._id;
-        const user = await User.findById(userId);
-        const { productId, quantity } = req.body;
-
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
+        let userDTO;
+        if (req.session.user && req.session.user.role === 'admin') {
+            // Admin user
+            userDTO = {
+                email: req.session.user.email,
+                role: req.session.user.role
+            };
+        } else {
+            // Regular user
+            userDTO = new UserDTO(req.user);
         }
 
-        const cartId = user.cartId;
-        await cartServices.addProductToCart(cartId, productId, quantity);
+        return res.json(userDTO);
+    });
 
-        res.redirect('/products');
+    router.get('/create-product', isAdmin, async (_, res) => {
+        try {
 
-    } catch (error) {
-        console.error('Error adding product to cart:', error);
-        res.status(500).send('Error adding product to cart.')
-    }
-});
+            res.render('create-product', {
+                title: 'Create product',
+                styles: ['create-product.css']
+            });
 
-// GET ticket by ID for React App
-// router.get('/:tid', isAuthenticated, async (req, res) => {
-//     try {
-//         const ticketId = req.params.tid;
-//         const ticket = await ticketServices.getTicket(ticketId);
-//         if (!ticket) {
-//             return res.status(404).json({ message: 'Ticket not found' });
-//         }
+        } catch (error) {
+            res.status(500).json({ error: 'Error crear el producto' });
+        }
+    });
 
-//         res.json('Purchase Ticket: ',{ ticket });
+    router.get('/update-product', isAdmin, async (_, res) => {
+        try {
 
-//     } catch (error) {
-//         console.error('Error fetching ticket:', error);
-//         res.status(500).json({ message: 'Internal server error' });
-//     }
-// });
+            res.render('update-product', {
+                title: 'Update product',
+                styles: ['update-product.css']
+            });
 
-router.get('/:tid', isAuthenticated, ticketController.getTicket);
+        } catch (error) {
+            res.status(500).json({ error: 'Error editar el producto' });
+        }
+    });
+
+    router.post('/add-to-cart', isAuthenticated, async (req, res) => {
+        try {
+            if (!req.session.user) {
+                return res.status(401).json({ message: 'You need to be logged in to purchase products' });
+            }
+
+            const userId = req.session.user._id;
+            const user = await User.findById(userId);
+            const { productId, quantity } = req.body;
+
+            if (!user) {
+                return res.status(404).json({ message: 'User not found' });
+            }
+
+            const cartId = user.cartId;
+            await cartServices.addProductToCart(cartId, productId, quantity);
+
+            res.redirect('/products');
+
+        } catch (error) {
+            console.error('Error adding product to cart:', error);
+            res.status(500).send('Error adding product to cart.')
+        }
+    });
+
+    // GET ticket by ID for React App
+    // router.get('/:tid', isAuthenticated, async (req, res) => {
+    //     try {
+    //         const ticketId = req.params.tid;
+    //         const ticket = await ticketServices.getTicket(ticketId);
+    //         if (!ticket) {
+    //             return res.status(404).json({ message: 'Ticket not found' });
+    //         }
+
+    //         res.json('Purchase Ticket: ',{ ticket });
+
+    //     } catch (error) {
+    //         console.error('Error fetching ticket:', error);
+    //         res.status(500).json({ message: 'Internal server error' });
+    //     }
+    // });
+
+    router.post('/mockingproducts', productController.createMockProducts);
+
+    router.get('/:tid', isAuthenticated, ticketController.getTicket);
 
     return router;
 }

@@ -16,6 +16,7 @@
                     <li>
                         <p>Product ID: {{productId}}</p>
                         <p>Quantity: {{quantity}}</p>
+                        <p>Name: {{name}}</p>
                     </li>
                 {{/each}}
                 </ul>
@@ -29,6 +30,7 @@
                 {{#each pendingStockProducts}}
                     <li>
                         <p>Product ID: {{productId}}</p>
+                        <p>Name: {{name}}</p>
                     </li>
                 {{/each}}
                 </ul>
@@ -43,7 +45,7 @@
         <ul>
             {{#each insufficientStockProducts}}
             <li>
-                <p>Product ID: {{this._id._id}}</p>
+                <p>Product: {{this._id.title}}</p>
             </li>
             {{/each}}
         </ul>

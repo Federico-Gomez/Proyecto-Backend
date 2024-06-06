@@ -8,8 +8,8 @@ class ProductsRepository {
         return this.dao.addProduct(title, description, price, thumbnails, code, stock, category);
     }
 
-    async addFakeProducts(n) {
-        return this.dao.addFakeProducts(n);
+    async createMockProducts(n) {
+        return this.dao.createMockProducts(n);
     }
 
     async getProducts(filters) {
