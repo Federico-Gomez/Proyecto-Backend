@@ -8,6 +8,7 @@ const cors = require('cors');
 const path = require('path');
 const compression = require('express-compression');
 const { errorHandler } = require('./services/errors/errorHandler');
+const { useLogger } = require('./utils/logger');
 
 const config = require('../config');
 console.log(config);
@@ -41,7 +42,6 @@ const { createRouter: createCartsRouter } = require('./routes/carts.router');
 const { createRouter: createUsersRouter } = require('./routes/users.router');
 const { createRouter: createViewsRouter } = require('./routes/views.router');
 const { createRouter: createMessagesRouter } = require('./routes/messages.router');
-const usersRouter = require('./routes/users.router');
 const sessionsRouter = require('./routes/session.router');
 // const petsRouter = require('./routes/pets.router');
 
@@ -53,6 +53,8 @@ app.use(cors({
     origin: 'http://localhost:5173',
     credentials: true
 }));
+
+app.use(useLogger);
 
 initializeStrategy();
 initializeStrategyGitHub();

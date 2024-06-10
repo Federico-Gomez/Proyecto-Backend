@@ -1,0 +1,20 @@
+fatal: This is a fatal message
+error: This is an error message
+fatal: This is a fatal message
+error: This is an error message
+http: Logger http: GET en /loggerTest - 12:02:07
+fatal: This is a fatal message
+error: This is an error message
+warning: This is a warning message
+info: This is an info message
+http: This is an http message
+debug: This is a debug message
+http: Logger http: GET en /loggerTest - 12:03:29
+fatal: This is a fatal message
+error: This is an error message
+warning: This is a warning message
+info: This is an info message
+http: This is an http message
+debug: This is a debug message
+fatal: This is a fatal message
+error: This is an error message

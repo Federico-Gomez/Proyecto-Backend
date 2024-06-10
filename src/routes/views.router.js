@@ -36,7 +36,7 @@ const createRouter = async () => {
     });
 
     router.get('/simulatemockproducts', (req, res) => {
-        
+
         const mockProducts = [];
         for (let i = 0; i < 50; i++) {
             mockProducts.push(generateMockProduct());
@@ -46,13 +46,23 @@ const createRouter = async () => {
     });
 
     router.get('/simulatemockusers', (req, res) => {
-        
+
         const mockUsers = []
-            for (let i = 0; i < 50; i++) {
-                mockUsers.push(generateMockUser());
-            }
+        for (let i = 0; i < 50; i++) {
+            mockUsers.push(generateMockUser());
+        }
 
         res.json(mockUsers);
+    });
+
+    router.get('/loggerTest', (req, res) => {
+        req.logger.fatal('This is a fatal message');
+        req.logger.error('This is an error message');
+        req.logger.warning('This is a warning message');
+        req.logger.info('This is an info message');
+        req.logger.http('This is an http message');
+        req.logger.debug('This is a debug message');
+        res.send(`Logger test: ${req.method} en ${req.url} - ${new Date().toLocaleTimeString()}`);
     });
 
     router.get('/users', (_, res) => {

@@ -1,0 +1,30 @@
+config:
+  plugin:
+    metrics-by-endpoint: {}
+  target: 'http://localhost:8080'
+  phases:
+    - duration: 20
+    arrivalRate: 10
+
+scenarios:
+  - name: 'Flujo de sesión (register + login)'
+    flow: 
+      - log: 'Crear usuario mock'
+      - get: 
+          url: '/api/users/mock'
+          capture: 
+            - json: '$.name'
+              as: 'name'
+      - log: 'Registrar usuario'
+      - post: 
+          url: '/api/users/register'
+          json:
+            name: '{{ name }}'
+      - think: 2
+      - log: 'Login usuario'
+      - post: 
+          url: '/api/users/login'
+          json:
+            username: '{{ username }}'
+            password: '{{ password }}'
+      - think: 2
