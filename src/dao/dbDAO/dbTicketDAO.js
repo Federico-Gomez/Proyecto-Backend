@@ -1,4 +1,5 @@
 const { Ticket } = require('../models');
+const { logger } = require('../../utils/logger');
 
 class TicketDAO {
 
@@ -39,7 +40,7 @@ class TicketDAO {
             return await newTicket.save();
 
         } catch (error) {
-            console.error('Error creating ticket in DAO:', error);
+            logger.error('Error creating ticket in DAO:', error);
             throw new Error('Error creating ticket: ' + error.message);
         }
     }

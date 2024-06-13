@@ -62,4 +62,4 @@ const useLogger = (req, res, next) => {
     next();
 }
 
-module.exports = { useLogger }
+module.exports = { useLogger, logger }

@@ -1,5 +1,6 @@
 const { Cart } = require('../models');
 const { Product } = require('../models');
+const { logger } = require('../../utils/logger');
 
 class CartDAO {
     #carts
@@ -33,7 +34,7 @@ class CartDAO {
             return cart._id;
 
         } catch (error) {
-            console.error("Error creating Cart:", error);
+            logger.error("Error creating Cart:", error);
             throw error;
         }
     }
@@ -46,7 +47,7 @@ class CartDAO {
             return cart ? cart : null;
 
         } catch (error) {
-            console.error("Error obtaining product by ID:", error);
+            logger.error("Error obtaining product by ID:", error);
             return null;
         }
     }
@@ -58,9 +59,9 @@ class CartDAO {
                 await this.createCart();
                 cart = await Cart.findOne({ _id: cid });
             }
-            console.log(cart);
+            logger.debug(cart);
             const existingProductIndex = cart.products.findIndex(p => p._id.toString() === pid);
-            console.log("EPIndex:" + existingProductIndex);
+            logger.debug("EPIndex:" + existingProductIndex);
 
             if (existingProductIndex !== -1) {
                 cart.products[existingProductIndex].quantity += parseInt(quantity);
@@ -71,7 +72,7 @@ class CartDAO {
             await cart.save();
 
         } catch (error) {
-            console.error('Error adding product to cart: ', error);
+            logger.error('Error adding product to cart: ', error);
             throw error;
         }
     }
@@ -79,10 +80,10 @@ class CartDAO {
     async getCarts() {
         try {
             const carts = await Cart.find();
-            console.log('Carts obtained:', carts);
+            logger.info('Carts obtained:', carts);
             return carts.map(c => c.toObject({ virtuals: true }));
         } catch (error) {
-            console.error("Error obtaining carts:", error);
+            logger.error("Error obtaining carts:", error);
             return [];
         }
     }
@@ -92,7 +93,7 @@ class CartDAO {
             const updatedCart = await Cart.updateOne({ _id: cid }, cartData);
             return updatedCart;
         } catch (error) {
-            console.error("Error updating cart:", error);
+            logger.error("Error updating cart:", error);
             throw error;
         }
     }
@@ -111,7 +112,7 @@ class CartDAO {
                 throw new Error('Product not found');
             }
         } catch (error) {
-            console.error('Error updating product quantity', error);
+            logger.error('Error updating product quantity', error);
             throw error;
         }
     }
@@ -119,9 +120,9 @@ class CartDAO {
     async deleteCart(cid) {
         try {
             await Cart.deleteOne({ _id: cid });
-            console.log("Cart deleted");
+            logger.info("Cart deleted");
         } catch (error) {
-            console.error("Error deleting cart:", error);
+            logger.error("Error deleting cart:", error);
         }
     }
 
@@ -134,13 +135,13 @@ class CartDAO {
             cart.products = cart.products.filter(p => p._id.toString() !== pid);
             await cart.save();
         } catch (error) {
-            console.error('Error removing product from cart', error);
+            logger.error('Error removing product from cart', error);
             throw error;
         }
     }
 
     async purchaseCart(cartId) {
-        console.log('Looking for cart with ID:', cartId);
+        logger.info(`Looking for cart with ID: ${cartId}`);
         // Obtener cart por su ID
         const cart = await Cart.findById(cartId).populate('products._id');
         if (!cart) {
@@ -163,8 +164,8 @@ class CartDAO {
             }
         }
 
-        console.log('Purchased: ' + productsToPurchase);
-        console.log('Out of Stock: ' + insufficientStockProducts);
+        logger.info('Purchased: ' + productsToPurchase);
+        logger.info('Out of Stock: ' + insufficientStockProducts);
         
         // Quitar productos comprados del cart
         cart.products = cart.products.filter(item => !productsToPurchase.find(p => p._id === item._id));

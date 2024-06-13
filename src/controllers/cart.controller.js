@@ -1,11 +1,12 @@
 const { cartServices, ticketServices } = require('../services');
+const { logger } = require('../utils/logger');
 
 module.exports = {
 
     purchaseCart: async (req, res) => {
         const { cid } = req.params;
         const userEmail = req.user.email;
-        console.log('Cart ID received:', cid); // Log cartId
+        logger.info(`Cart ID received:', ${cid}`); // Log cartId
 
         try {
             // Obtener cart por su ID
@@ -17,14 +18,14 @@ module.exports = {
                 let amount = 0;
                 for (const product of productsToPurchase) {
                     const productTotal = product.quantity * product._id.price;
-                    console.log(`Product Name: ${product._id.title}, Product ID: ${product._id._id}, Quantity: ${product.quantity}, Price: ${product._id.price}, Total: ${productTotal}`);
+                    logger.info(`Product Name: ${product._id.title}, Product ID: ${product._id._id}, Quantity: ${product.quantity}, Price: ${product._id.price}, Total: ${productTotal}`);
                     amount += productTotal;
                 }
 
-                console.log('Total amount calculated:', amount);
+                logger.info(`Total amount calculated: ${amount}`);
 
                 if (isNaN(amount)) {
-                    console.error('Invalid amount calculated:', amount);
+                    logger.error(`Invalid amount: ${amount}`);
                     return res.status(500).json({ status: 'error', message: 'Invalid amount calculated' });
                 }
 
@@ -45,7 +46,7 @@ module.exports = {
                     })),
                 };
 
-                console.log('Ticket Data:', ticketData);
+                logger.info('Ticket Data:', ticketData);
                 
                 const ticket = await ticketServices.createTicket(ticketData);
 
@@ -64,7 +65,7 @@ module.exports = {
             }
 
         } catch (err) {
-            console.error(err);
+            logger.error(err);
             res.status(500).json({ status: 'error', message: 'Something went wrong' });
         }
     }

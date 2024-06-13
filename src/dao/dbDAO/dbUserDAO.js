@@ -1,5 +1,6 @@
 const { User, Cart } = require('../models');
 const { fakerES: faker } = require('@faker-js/faker');
+const { logger } = require('../../utils/logger');
 
 class UserDAO {
 
@@ -40,7 +41,7 @@ class UserDAO {
             return await newUser.save();
 
         } catch (error) {
-            console.error('Error creating user in DAO:', error);
+            logger.error('Error creating user in DAO:', error);
             throw new Error('Error creating user: ' + error.message);
         }
     }
@@ -63,7 +64,7 @@ class UserDAO {
             }
 
         } catch (error) {
-            console.error('Error creating users in DAO:', error);
+            logger.error('Error creating users in DAO:', error);
             throw new Error('Error creating users: ' + error.message);
         }
     }
@@ -73,7 +74,7 @@ class UserDAO {
             const userToDelete = await User.deleteOne(userId);
             return userToDelete.toObject() ?? false;
         } catch (error) {
-            console.error('Error deleting user in DAO:', error);
+            logger.error('Error deleting user in DAO:', error);
             throw new Error('Error deleting user: ' + error.message);
         }
     }

@@ -1,4 +1,5 @@
 const { ticketServices } = require('../services');
+const { logger } = require('../utils/logger');
 
 module.exports = {
 
@@ -22,8 +23,8 @@ module.exports = {
             const pendingStockProducts = ticket.pendingStockProducts || [];
             const purchasedProducts = ticket.purchasedProducts || [];
 
-            console.log('Purchased:', purchasedProducts);
-            console.log('Insufficient Stock:', pendingStockProducts);
+            logger.info('Purchased:', purchasedProducts);
+            logger.info('Insufficient Stock:', pendingStockProducts);
 
             res.render('purchaseTicket', {
                 success: true,
@@ -34,7 +35,7 @@ module.exports = {
             });
 
         } catch (error) {
-            console.error('Error in getTicket:', error);
+            logger.error('Error in getTicket:', error);
             res.sendError({ message: 'Something went wrong' }, 500);
         }
     },

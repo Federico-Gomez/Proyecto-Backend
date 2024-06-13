@@ -1,3 +1,5 @@
+const { logger } = require('../utils/logger');
+
 class TicketsRepository {
 
     constructor(dao) {
@@ -13,7 +15,7 @@ class TicketsRepository {
     }
 
     async createTicket(ticketData) {
-        console.log('Creating ticket with data:', ticketData);
+        logger.info('Creating ticket with data:', ticketData);
         return this.dao.createTicket(ticketData);
     }
 

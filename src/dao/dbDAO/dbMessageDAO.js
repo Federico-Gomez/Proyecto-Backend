@@ -1,13 +1,14 @@
 const { Message } = require('../models');
+const { logger } = require('../../utils/logger');
 
 class MessageDAO {
 
     async saveMessage(username, message) {
         try {
             const savedMessage = await Message.create({ username, message });
-            console.log('Message saved successfully: ', savedMessage);
+            logger.info('Message saved successfully: ', savedMessage);
         } catch (error) {
-            console.error('Error saving message: ', error);
+            logger.error('Error saving message: ', error);
             throw error;
         }
     }
@@ -17,7 +18,7 @@ class MessageDAO {
             const messages = await Message.find();
             return messages;
         } catch (error) {
-            console.error('Error retrieving messages: ', error);
+            logger.error('Error retrieving messages: ', error);
             throw error;
         }
     }

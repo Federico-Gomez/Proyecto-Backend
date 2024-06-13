@@ -65,7 +65,8 @@ const createRouter = async () => {
         res.send(`Logger test: ${req.method} en ${req.url} - ${new Date().toLocaleTimeString()}`);
     });
 
-    router.get('/users', (_, res) => {
+    router.get('/users', (req, res) => {
+        req.logger.info('Fetching users');
         const userIndex = parseInt(Math.random() * users.length);
         const user = users[userIndex];
 
@@ -93,7 +94,8 @@ const createRouter = async () => {
         });
     });
 
-    router.get('/login', userIsNotLoggedIn, async (_, res) => {
+    router.get('/login', userIsNotLoggedIn, async (req, res) => {
+        req.logger.info('Rendering login page');
         res.render('login', {
             title: 'Login'
         });
@@ -105,13 +107,15 @@ const createRouter = async () => {
     //     });
     // });
 
-    router.get('/reset_password', userIsNotLoggedIn, async (_, res) => {
+    router.get('/reset_password', userIsNotLoggedIn, async (req, res) => {
+        req.logger.info('Rendering reset password page');
         res.render('reset_password', {
             title: 'Reset Password'
         });
     });
 
-    router.get('/register', userIsNotLoggedIn, async (_, res) => {
+    router.get('/register', userIsNotLoggedIn, async (req, res) => {
+        req.logger.info('Rendering register page');
         res.render('register', {
             title: 'Register'
         });
@@ -121,6 +125,8 @@ const createRouter = async () => {
         const idFromSession = req.session.user._id;
 
         const user = await User.findOne({ _id: idFromSession });
+
+        req.logger.info(`Rendering profile page for user: ${user.email}`);
 
         res.render('profile', {
             title: 'My profile',
@@ -135,6 +141,7 @@ const createRouter = async () => {
     });
 
     router.get('/chat', isNotAdmin, (req, res) => {
+        req.logger.info('Rendering chat page');
         res.render('chat', {
             title: 'Chat App',
             useWS: true,
@@ -185,6 +192,7 @@ const createRouter = async () => {
 
             // const productDAO = req.app.get('productDAO');
             const products = await productServices.getProducts();
+            req.logger.info('Rendering real-time products page');
             // res.status(200).json(products);
 
             res.render('realTimeProducts', {
@@ -198,6 +206,7 @@ const createRouter = async () => {
             });
 
         } catch (error) {
+            req.logger.error('Error loading real-time products: ', error);
             res.status(500).json({ error: 'Error al cargar los productos' });
         }
     });
@@ -207,6 +216,7 @@ const createRouter = async () => {
 
             // const cartDAO = req.app.get('cartDAO');
             const carts = await cartServices.getCarts();
+            req.logger.info('Rendering real-time carts page');
             // res.status(200).json(products);
 
             res.render('realTimeCarts', {
@@ -219,6 +229,7 @@ const createRouter = async () => {
             });
 
         } catch (error) {
+            req.logger.error('Error loading real-time carts: ', error);
             res.status(500).json({ error: 'Error al cargar los productos' });
         }
     });
@@ -236,11 +247,13 @@ const createRouter = async () => {
 
             // const productDAO = req.app.get('productDAO');
             await productServices.addProduct(title, description, price, thumbnails, code, stock, category);
+            req.logger.info('Product added successfully');
 
             // 2 -> Notificar a los clientes desde WS que se agregó un producto nuevo
             // req.wsServer.emit('newProductAdded', { title, description, price, thumbnails, code, stock, category });
             res.redirect('/realtimeproducts');
         } catch (error) {
+            req.logger.error('Error adding product: ', error);
             // res.status(500).json({ error: 'Error al cargar el producto' });
             req.wsServer.emit('newProductError', 'Error al cargar el producto: ' + error.message);
         }
@@ -265,9 +278,10 @@ const createRouter = async () => {
         try {
             // const cartDAO = req.app.get('cartDAO');
             await cartServices.createCart();
+            req.logger.info('Cart created successfully');
             res.redirect('/realtimecarts');
         } catch (error) {
-            console.error('Error creating cart: ', error);
+            req.logger.error('Error creating cart: ', error);
             res.status(500).json({ error: 'Failed to create cart' });
         }
     });
@@ -277,9 +291,10 @@ const createRouter = async () => {
             const { cartId, productId, quantity } = req.body;
             // const cartDAO = req.app.get('cartDAO');
             await cartServices.addProductToCart(cartId, productId, quantity);
+            req.logger.info(`Product added to cart: ${cartId}`);
             res.redirect('/realtimecarts');
         } catch (error) {
-            console.error('Error adding product to cart: ', error);
+            req.logger.error('Error adding product to cart: ', error);
             res.status(500).json({ error: 'Failed to add product to cart' });
         }
     });
@@ -331,6 +346,8 @@ const createRouter = async () => {
             // Perform paginated query for products
             const result = await Product.paginate(conditions, options);
 
+            req.logger.info('Rendering products page with filters');
+
             // Send response with the specified format
             res.render('products', {
                 title: 'Product List',
@@ -355,7 +372,7 @@ const createRouter = async () => {
 
         } catch (error) {
             // Error handling
-            console.error('Error retrieving products:', error);
+            req.logger.error('Error retrieving products:', error);
             res.status(500).json({ status: 'error', error: 'Error retrieving products.' });
         }
     });
@@ -363,6 +380,7 @@ const createRouter = async () => {
 
     router.get('/current', async (req, res) => {
         if (!req.user && !req.session.user) {
+            req.logger.warning('Unauthorized access to /current');
             return res.status(401).json({ error: 'User not authenticated' });
         }
 
@@ -378,31 +396,34 @@ const createRouter = async () => {
             userDTO = new UserDTO(req.user);
         }
 
+        req.logger.info(`User data fetched for ${req.session.user.email}`);
         return res.json(userDTO);
     });
 
-    router.get('/create-product', isAdmin, async (_, res) => {
+    router.get('/create-product', isAdmin, async (req, res) => {
         try {
-
+            req.logger.info('Rendering create-product page');
             res.render('create-product', {
                 title: 'Create product',
                 styles: ['create-product.css']
             });
 
         } catch (error) {
+            req.logger.error('Error rendering create-product page: ', error);
             res.status(500).json({ error: 'Error crear el producto' });
         }
     });
 
-    router.get('/update-product', isAdmin, async (_, res) => {
+    router.get('/update-product', isAdmin, async (req, res) => {
         try {
-
+            req.logger.info('Rendering update-product page');
             res.render('update-product', {
                 title: 'Update product',
                 styles: ['update-product.css']
             });
 
         } catch (error) {
+            req.logger.error('Error rendering update-product page: ', error);
             res.status(500).json({ error: 'Error editar el producto' });
         }
     });
@@ -410,6 +431,7 @@ const createRouter = async () => {
     router.post('/add-to-cart', isAuthenticated, async (req, res) => {
         try {
             if (!req.session.user) {
+                req.logger.warning('Unauthorized add to cart attempt');
                 return res.status(401).json({ message: 'You need to be logged in to purchase products' });
             }
 
@@ -418,16 +440,18 @@ const createRouter = async () => {
             const { productId, quantity } = req.body;
 
             if (!user) {
+                req.logger.error('User not found');
                 return res.status(404).json({ message: 'User not found' });
             }
 
             const cartId = user.cartId;
             await cartServices.addProductToCart(cartId, productId, quantity);
 
+            req.logger.info(`Product added to cart for user: ${user.email}`);
             res.redirect('/products');
 
         } catch (error) {
-            console.error('Error adding product to cart:', error);
+            req.logger.error('Error adding product to cart:', error);
             res.status(500).send('Error adding product to cart.')
         }
     });

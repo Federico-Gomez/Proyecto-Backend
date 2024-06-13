@@ -1,5 +1,6 @@
 const { Product } = require('../models');
 const { fakerES: faker } = require('@faker-js/faker');
+const { logger } = require('../../utils/logger');
 
 class ProductDAO {
     #products
@@ -38,12 +39,12 @@ class ProductDAO {
                 // id: this.productIdCounter
             })
                 .then((prod) => {
-                    console.log("Product added succesfully:" + prod);
+                    logger.info("Product added succesfully:" + prod);
                 });
 
 
         } catch (error) {
-            console.error("Error adding product: ", error);
+            logger.error("Error adding product: ", error);
             throw new Error("Error adding product: " + error.message);
         }
     }
@@ -69,11 +70,11 @@ class ProductDAO {
                 mockProducts.push(mockProduct);
             }
 
-            console.log('Products created!: ', mockProducts);
+            logger.info('Products created!: ', mockProducts);
             return mockProducts;
 
         } catch (error) {
-            console.error("Error adding products: ", error);
+            logger.error("Error adding products: ", error);
             throw new Error("Error adding products: " + error.message);
         }
     }
@@ -98,7 +99,7 @@ class ProductDAO {
             return products.map(p => p.toObject({ virtuals: true }));
 
         } catch (error) {
-            console.error("Error obtaining products:", error);
+            logger.error("Error obtaining products:", error);
             return [];
         }
     }
@@ -139,7 +140,7 @@ class ProductDAO {
                 nextLink: paginatedResults.hasNextPage ? `/api/products?limit=${limit}&page=${paginatedResults.nextPage}` : null,
             };
         } catch (error) {
-            console.error("Error obtaining products:", error);
+            logger.error("Error obtaining products:", error);
             return {
                 status: 'error',
                 error: 'Error obtaining products'
@@ -152,7 +153,7 @@ class ProductDAO {
            const product = await Product.findOne({ _id: id });
            return product.toObject({ virtuals: true });
         } catch (error) {
-            console.error("Error obtaining product by ID:", error);
+            logger.error("Error obtaining product by ID:", error);
             return null;
         }
     }
@@ -166,18 +167,19 @@ class ProductDAO {
                 console.log("Product updated:", updatedProduct);
                 return updatedProduct.toObject();
             } else {
-                console.error("Error finding or updating product.");
+                logger.error("Error finding or updating product.");
             }
         } catch (error) {
-            console.error("Error updating product:", error);
+            logger.error("Error updating product:", error);
         }
     }
 
     async deleteProduct(id) {
         try {
             await Product.deleteOne({ _id: id });
+            logger.info("Product deleted");
         } catch (error) {
-            console.error("Error deleting product:", error);
+            logger.error("Error deleting product:", error);
         }
     }
 }
