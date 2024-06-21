@@ -10,6 +10,7 @@ const UserDTO = require('../utils/DTOs/userDTO');
 const ticketController = require('../controllers/ticket.controller');
 const productController = require('../controllers/product.controller');
 const { generateMockProduct, generateMockUser } = require('../utils/mocks/mockGenerator');
+const { verifyPasswordResetToken } = require('../utils/jwt');
 
 const createRouter = async () => {
 
@@ -111,6 +112,21 @@ const createRouter = async () => {
         req.logger.info('Rendering reset password page');
         res.render('reset_password', {
             title: 'Reset Password'
+        });
+    });
+
+    router.get('/reset_password/:token', userIsNotLoggedIn, async (req,res) => {
+        const { token } = req.params;
+        const decoded = verifyPasswordResetToken(token);
+
+        if (!decoded) {
+            return res.redirect('/request:password_reset');
+        }
+        
+        req.logger.info('Rendering reset password page');
+        res.render('reset_password', {
+            title: 'Reset Password',
+            token
         });
     });
 

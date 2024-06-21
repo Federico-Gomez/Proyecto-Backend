@@ -21,7 +21,7 @@ const createRouter = async () => {
                 attachments: [
                     {
                         filename: 'dni.jpg',
-                        path: `${__dirname}/../public/images/dni.jpg`,
+                        path: `${__dirname}/../../public/images/dni.jpg`,
                         cid: 'my_dni'
                     }
                 ]

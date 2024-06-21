@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const handlebars = require('express-handlebars');
+const exphbs = require('express-handlebars');
 const { Server } = require('socket.io');
 const cookieParser = require('cookie-parser');
 const { configureCustomResponses } = require('./controllers/controller.utils');
@@ -63,12 +63,19 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Config de handlebars
-app.engine('handlebars', handlebars.engine({
+const handlebars = exphbs.create({
+    helpers: {
+        eq: (a, b) => a === b
+    },
+
     runtimeOptions: {
         allowProtoPropertiesByDefault: true,
         allowProtoMethodsByDefault: true
     }
-}));
+});
+
+
+app.engine('handlebars', handlebars.engine);
 app.set('views', path.join(__dirname, 'views'));
 // app.engine('handlebars', handlebars.engine());
 // app.set('views', `${__dirname}/views`);

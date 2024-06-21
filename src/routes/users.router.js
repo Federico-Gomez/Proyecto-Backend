@@ -3,7 +3,7 @@ const { User } = require('../dao/models');
 const { userServices } = require('../services');
 
 const createRouter = async () => {
-    
+
     const router = Router();
 
     // const users = [
@@ -79,6 +79,46 @@ const createRouter = async () => {
             return res.status(400).json({
                 message: err.message
             });
+        }
+    });
+
+    router.post('/premium/:uid', async (req, res) => {
+        try {
+            const { uid } = req.params;
+            const user = await User.findById(uid);
+
+            if (!user) {
+                return res.status(400).json({ message: 'User not found' });
+            }
+
+            user.role = user.role === 'user' ? 'premium' : 'user';
+            await user.save();
+
+            res.status(200).json({ message: 'User role updated', user});
+
+        } catch (error) {
+            req.logger.error('Error changing user role: ', error);
+            res.status(500).json({ error: 'Error changing user role' });
+        }
+    });
+
+    router.get('/premium/:uid', async (req, res) => {
+        try {
+            const { uid } = req.params;
+            const user = await User.findById(uid);
+
+            if (!user) {
+                return res.status(400).json({ message: 'User not found' });
+            }
+
+            res.render('user_role_switch', {
+                title: 'Switch User Role',
+                user
+            });
+
+        } catch (error) {
+            req.logger.error('Error rendering user role change view: ', error);
+            res.status(500).json({ error: 'Error rendering user role change view' });
         }
     });
 

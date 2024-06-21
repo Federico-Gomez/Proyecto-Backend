@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const { Product } = require('../dao/models');
 const { productServices } = require('../services');
-const { isAdmin } = require('../middlewares/auth.middleware');
+const { isAdmin, isOwnerOrAdmin } = require('../middlewares/auth.middleware');
 const { invalidProductDataError}  = require('../services/errors/productError');
 const { CustomError } = require('../services/errors/CustomError');
 const { ErrorCodes } = require('../services/errors/errorCodes');
@@ -80,7 +80,7 @@ const createRouter = async () => {
     router.get('/', async (req, res) => {
         try {
             const { limit = 10, page = 1, sort = null, category } = req.query;
-            console.log('Category:', category);
+            req.logger.info('Category:', category);
 
             const conditions = {};
 
@@ -96,7 +96,7 @@ const createRouter = async () => {
 
             // Perform paginated query for products
             const result = await Product.paginate(conditions, options);
-            console.log(result);
+            req,logger.info(result);
 
             const prevLink = result.hasPrevPage ? `/api/products?limit=${limit}&page=${result.prevPage}` : null;
             const nextLink = result.hasNextPage ? `/api/products?limit=${limit}&page=${result.nextPage}` : null;
@@ -115,7 +115,7 @@ const createRouter = async () => {
             });
 
         } catch (error) {
-            console.error("Error obtaining products:", error);
+            req.logger.error("Error obtaining products:", error);
             res.status(500).json({ status: 'error', error: 'Error obtaining products' });
         }
     });
@@ -139,6 +139,8 @@ const createRouter = async () => {
     router.post('/', isAdmin, async (req, res, next) => {
         try {
             const { title, description, price, thumbnails, code, stock, category } = req.body;
+            const { user } = req.session;
+            const owner = user.role === 'admin' ? 'admin' : user.email;
             if (!title || !description || !code || !price || isNaN(stock) || stock < 0 || !category) {
                 const errorMessage = invalidProductDataError({ title, description, price, thumbnails, code, stock, category });
                 return next(CustomError.createError({
@@ -150,7 +152,7 @@ const createRouter = async () => {
             }
 
             // const productDAO = req.app.get('productDAO');
-            await productServices.addProduct(title, description, price, thumbnails, code, stock, category);
+            await productServices.addProduct(title, description, price, thumbnails, code, stock, category, owner);
             res.status(201).json({ message: 'Product added successfully to database' });
         } catch (error) {
             next(CustomError.createError({
@@ -174,10 +176,10 @@ const createRouter = async () => {
         }
     });
 
-    router.delete('/:pid', isAdmin, async (req, res) => {
+    router.delete('/:pid', isOwnerOrAdmin, async (req, res) => {
         try {
             // const productDAO = req.app.get('productDAO');
-            console.log('DELETE request received for product:', req.params.pid);
+            req.logger.info('DELETE request received for product:', req.params.pid);
             const productId = req.params.pid;
             await productServices.deleteProduct(productId);
             res.json({ message: 'Product deleted' });

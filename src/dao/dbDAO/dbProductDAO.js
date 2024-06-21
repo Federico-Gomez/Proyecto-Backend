@@ -21,7 +21,7 @@ class ProductDAO {
         }
     }
 
-    async addProduct(title, description, price, thumbnails, code, stock, category) {
+    async addProduct(title, description, price, thumbnails, code, stock, category, owner) {
         try {
 
             if (!title || !description || !code || !price || isNaN(stock) || stock < 0 || !category) {
@@ -35,7 +35,8 @@ class ProductDAO {
                 thumbnails,
                 code,
                 stock,
-                category
+                category,
+                owner
                 // id: this.productIdCounter
             })
                 .then((prod) => {

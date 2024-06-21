@@ -2,10 +2,11 @@ const { Router } = require('express');
 const { User } = require('../dao/models/');
 const { hashPassword, isValidPassword } = require('../utils/hashing');
 const passport = require('passport');
-const { generateToken, verifyToken } = require('../utils/jwt');
+const { generateToken, verifyToken, generatePasswordResetToken, verifyPasswordResetToken } = require('../utils/jwt');
 const config = require('../../config');
 const { checkLoginType } = require('../middlewares/auth.middleware');
 const UserDTO = require('../utils/DTOs/userDTO');
+const transport = require('../mailing/transport');
 
 const router = Router();
 
@@ -49,7 +50,7 @@ router.post('/login', checkLoginType, passport.authenticate('login', { failureRe
 
 });
 
-// // Ruta de login para admin y user con implementación manual de passport.authenticae()
+// // Ruta de login para admin y user con implementación manual de passport.authenticate()
 // router.post('/login', async (req, res, next) => {
 //     const { email, password, login_type } = req.body;
 
@@ -168,17 +169,60 @@ router.get('/failregister', (_, res) => {
     res.send('Error registering user');
 });
 
-router.post('/reset_password', async (req, res) => {
-    const { email, password } = req.body;
+router.post('/request_password_reset', async (req, res) => {
+    const { email } = req.body;
+    if (!email) {
+        return res.status(400).json({ error: 'Email is required' });
+    }
 
-    if (!email || !password) {
+    const user = await User.findOne({ email });
+    if (!user) {
+        return res.status(400).json({ error: 'User not found' });
+    }
+
+    const token = generatePasswordResetToken(email);
+    const resetLink = `${config.BASE_URL}/reset_password/${token}`;
+
+    // Enviar email
+    const mailOptions = {
+        from: config.GMAIL_ACCOUNT,
+        to: email,
+        subject: 'Password Reset',
+        html: `<p>Click on the link below to reset your password:</p><a href="${resetLink}">Reset Password</a>`
+    }
+
+    transport.sendMail(mailOptions, (err, info) => {
+        if (err) {
+            console.error('Error sending email:', err);
+            return res.status(500).json({ error: 'Error sending email' });
+        }
+
+        res.status(200).json({ message: 'Password reset email sent' });
+    });
+});
+
+router.post('/reset_password', async (req, res) => {
+    const { token, email, password } = req.body;
+
+    if (!token || !email || !password) {
         return res.status(400).json({ error: 'Invalid credentials' });
+    }
+
+    const decoded = verifyPasswordResetToken(token);
+
+    if (!decoded) {
+        return res.status(400).json({ error: 'Invalid or expired token' });
     }
 
     // Verificar que el usuario exista en la DB
     const user = await User.findOne({ email });
     if (!user) {
         return res.status(400).json({ error: 'User not found' });
+    }
+
+    // Validar que el password nuevo sea distinto del viejo
+    if (isValidPassword(password, user.password)) {
+        return res.status(400).json({ error: 'Cannot reuse the old password' });
     }
 
     //Actualizar la contraseña

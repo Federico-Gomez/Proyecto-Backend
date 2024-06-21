@@ -4,8 +4,8 @@ class ProductsRepository {
         this.dao = dao;
     }
 
-    async addProduct(title, description, price, thumbnails, code, stock, category) {
-        return this.dao.addProduct(title, description, price, thumbnails, code, stock, category);
+    async addProduct(title, description, price, thumbnails, code, stock, category, owner) {
+        return this.dao.addProduct(title, description, price, thumbnails, code, stock, category, owner);
     }
 
     async createMockProducts(n) {

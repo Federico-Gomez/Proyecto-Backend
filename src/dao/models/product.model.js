@@ -10,7 +10,8 @@ const productSchema = new mongoose.Schema({
     thumbnails: { type: String },
     code: { type: String, required: true, unique: true},
     stock: { type: Number, required: true},
-    category: { type: String, required: true}
+    category: { type: String, required: true},
+    owner: { type: String, default: 'admin'} // Default owner is always admin
 });
 
 productSchema.virtual('id').get(function() {

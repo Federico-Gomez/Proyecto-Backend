@@ -1,3 +1,5 @@
+const { Product } = require("../dao/models");
+
 module.exports = {
     userIsLoggedIn: (req, res, next) => {
         const isLoggedIn = ![null, undefined].includes(req.session.user);
@@ -58,6 +60,22 @@ module.exports = {
             return res.status(403).json({ message: 'Forbidden: Users only' });
         }
         next();
-    }
+    },
 
+    isOwnerOrAdmin: (req, res, next) => {
+        const { user } = req.session;
+        const { productId } = req.params;
+
+        if (!user) {
+            return res.status(401).json({ message: 'Unauthorized' });
+        }
+
+        Product.findById(productId).then((product) => {
+            if (product.owner === user.email || user.role === 'admin') {
+                return next();
+            } else {
+                return res.status(403).json({ message: 'Forbidden: Owners or Admins only' });
+            }
+        });
+    }
 }

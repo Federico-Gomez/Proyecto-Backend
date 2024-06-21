@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { Cart } = require('../dao/models');
+const { Cart, Product } = require('../dao/models');
 const { cartServices } = require('../services');
 const cartController = require('../controllers/cart.controller');
 const mongoose = require('mongoose');
@@ -51,6 +51,14 @@ const createRouter = async () => {
             const cartId = req.params.cid;
             const productId = req.params.pid;
             const { quantity } = req.body;
+
+            // Prevent adding owner´s own products to cart
+            const { user } = req.session;
+            const product = await Product.findById(productId);
+            if (user.role === 'premium' && product.owner === user.email) {
+                return res.status(400).json({ message: 'Cannot add a product you own to your cart' });
+            }
+
             await cartServices.addProductToCart(cartId, productId, quantity);
             res.status(201).json({ message: 'Product successfully added to cart' })
         } catch (error) {
