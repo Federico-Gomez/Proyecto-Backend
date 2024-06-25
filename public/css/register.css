@@ -5,39 +5,26 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 20px;
+    height: 100vh;
+    margin: 0;
 }
 
 .form-container {
-    display: flex;
-    flex-direction: column;
     background-color: #555555;
     border: 1px solid #ffffff;
     padding: 20px;
-    width: 350px;
-    text-align: center;
-    align-items: center;
-}
-
-.input-field {
     width: 300px;
-}
-
-h2 {
-    color: #ffffff;
+    text-align: center;
 }
 
 .submit-btn {
     display: block;
     color: #ffffff;
-    background-color: #555555;
     text-decoration: none;
     padding: 10px;
     border: 2px solid #ffffff;
     font-weight: 600;
     margin-bottom: 10px;
-    margin-top: 10px;
-    width: 324px;
     transition: background-color 0.35s, color 0.35s;
 }
 
@@ -57,12 +44,10 @@ form label {
     color: #ffffff;
 }
 
-form input,
-form button {
+form input, form button {
     width: 100%;
     padding: 10px;
     margin-bottom: 15px;
-    justify-content: center;
 }
 
 form button {

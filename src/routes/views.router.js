@@ -91,14 +91,20 @@ const createRouter = async () => {
         res.render('index', {
             title: 'Home',
             isLoggedIn,
-            isNotLoggedIn: !isLoggedIn
+            isNotLoggedIn: !isLoggedIn,
+            styles: [
+                'landing.css'
+            ]
         });
     });
 
     router.get('/login', userIsNotLoggedIn, async (req, res) => {
         req.logger.info('Rendering login page');
         res.render('login', {
-            title: 'Login'
+            title: 'Login',
+            styles: [
+                'login.css'
+            ]
         });
     });
 
@@ -111,7 +117,10 @@ const createRouter = async () => {
     router.get('/reset_password', userIsNotLoggedIn, async (req, res) => {
         req.logger.info('Rendering reset password page');
         res.render('reset_password', {
-            title: 'Reset Password'
+            title: 'Reset Password',
+            styles: [
+                'reset-password.css'
+            ]
         });
     });
 
@@ -126,14 +135,20 @@ const createRouter = async () => {
         req.logger.info('Rendering reset password page');
         res.render('reset_password', {
             title: 'Reset Password',
-            token
+            token,
+            styles: [
+                'reset-password.css'
+            ]
         });
     });
 
     router.get('/register', userIsNotLoggedIn, async (req, res) => {
         req.logger.info('Rendering register page');
         res.render('register', {
-            title: 'Register'
+            title: 'Register',
+            styles: [
+                'register.css'
+            ]
         });
     });
 
@@ -158,7 +173,7 @@ const createRouter = async () => {
                     cartId: user.cartId
                 },
                 ownedProducts,
-                styles: ['products.css']
+                styles: ['profile.css']
             });
 
         } catch (error) {
@@ -453,18 +468,27 @@ const createRouter = async () => {
 
     router.get('/update-product', isAdminOrPremium, async (req, res) => {
         try {
+            const productId = req.query.pid;
+            const product = await productServices.getProductById(productId);
+
+            if (!product) {
+                req.logger.info('Product not found');
+                return res.status(404).json({ message: 'Product not found' });
+            }
+    
             req.logger.info('Rendering update-product page');
             res.render('update-product', {
                 title: 'Update product',
-                styles: ['update-product.css']
+                styles: ['update-product.css'],
+                product: product
             });
-
+    
         } catch (error) {
             req.logger.error('Error rendering update-product page: ', error);
             res.status(500).json({ error: 'Error editar el producto' });
         }
     });
-
+    
     router.post('/add-to-cart', isAuthenticated, async (req, res) => {
         try {
             if (!req.session.user) {

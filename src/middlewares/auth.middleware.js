@@ -74,19 +74,23 @@ module.exports = {
 
     isOwnerOrAdmin: (req, res, next) => {
         const { user } = req.session;
-        const { productId } = req.params;
+        const { pid: productId } = req.params;
 
         if (!user) {
             return res.status(401).json({ message: 'Unauthorized' });
         }
 
         Product.findById(productId).then((product) => {
+            if (!product) {
+                return res.status(404).json({ message: 'Product not found' });
+            }
             if (product.owner === user.email || user.role === 'admin') {
                 return next();
             } else {
                 return res.status(403).json({ message: 'Forbidden: Owners or Admins only' });
             }
         }).catch(err => {
+            req.logger.error(err);
             res.status(500).json({ message: 'Product not found or server error' });
         });
     }

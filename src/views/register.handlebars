@@ -1,21 +1,21 @@
-<h2>Register new user</h2>
+<div class="form-container">
+    <h2>Register new user</h2>
+    <form action="/api/sessions/register" method="post" enctype="application/x-www-form-urlencoded">
+        <label for="firstName">First name:</label>
+        <input type="text" name="firstName" id="_f_name">
 
-<form action="/api/sessions/register" method="post" enctype="application/x-www-form-urlencoded">
+        <label for="lastName">Last name:</label>
+        <input type="text" name="lastName" id="_l_name">
 
-    <label for="firstName">First name:</label>
-    <input type="text" name="firstName" id="_f_name">
+        <label for="age">Age:</label>
+        <input type="number" name="age" id="_age">
 
-    <label for="lastName">Last name:</label>
-    <input type="text" name="lastName" id="_l_name">
+        <label for="email">Email:</label>
+        <input type="email" name="email" id="_email">
 
-    <label for="age">Age:</label>
-    <input type="number" name="age" id="_age">
+        <label for="password">Password:</label>
+        <input type="password" name="password" id="_pass">
 
-    <label for="email">Email:</label>
-    <input type="email" name="email" id="_email">
-
-    <label for="password">Password:</label>
-    <input type="password" name="password" id="_pass">
-
-    <button type="submit" id="btn">Register</button>
-</form>
+        <button class="submit-btn" type="submit">Register</button>
+    </form>
+</div>

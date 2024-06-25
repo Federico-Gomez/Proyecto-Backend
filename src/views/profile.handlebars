@@ -1,38 +1,49 @@
-<div>
-    <h1>Bienvenido {{user.firstName}} {{user.lastName}}</h1>
-    <h2>Datos del perfil: </h2>
-    <div>Edad: {{user.age}}</div>
-    <div>Email: {{user.email}}</div>
-    <div>Cart ID: {{user.cartId}}</div>
-    <div>Categoría: {{user.role}}</div>
+<div class="outer-container">
+    <div class="container">
+        <div class="profile-container">
+            <h1>Bienvenido {{user.firstName}} {{user.lastName}}</h1>
+            <h2>Datos del perfil:</h2>
+            <div>Edad: {{user.age}}</div>
+            <div>Email: {{user.email}}</div>
+            <div>Cart ID: {{user.cartId}}</div>
+            <div>Categoría: {{user.role}}</div>
+        </div>
+        <a class="menu-item" href="/">Inicio</a>
+    </div>
+
+    <br>
+
+    <h2>Mis Productos</h2>
+
+    {{#if ownedProducts.length}}
+    <ul class="product-list">
+        {{#each ownedProducts}}
+        <li class="product-item">
+            <div class="item-container">
+                <div>
+                    <div class="product-title">{{this.title}}</div>
+                    <div class="product-description">{{this.description}}</div>
+                    <div class="product-price">Price: ${{this.price}}</div>
+                    <div class="product-stock">Stock: {{this.stock}}</div>
+                    <div class="product-category">Category: {{this.category}}</div>
+                </div>
+                <div>
+                    <form action="/update-product" method="get">
+                        <input type="hidden" name="productId" value="{{this.id}}">
+                        <button class="submit-btn" type="submit">Edit product</button>
+                    </form>
+                    <form action="/delete-product" method="post">
+                        <input type="hidden" name="productId" value="{{this.id}}">
+                        <button class="delete-product" type="submit">Delete product</button>
+                    </form>
+                </div>
+            </div>
+
+        </li>
+        {{/each}}
+    </ul>
+    {{else}}
+    <p>No owned products found.</p>
+    {{/if}}
+
 </div>
-
-<br>
-
-<a href="/">Inicio</a>
-
-<h2>Mis Productos</h2>
-
-{{#if ownedProducts.length}}
-<ul class="product-list">
-    {{#each ownedProducts}}
-    <li class="product-item">
-        <div class="product-title">{{this.title}}</div>
-        <div class="product-description">{{this.description}}</div>
-        <div class="product-price">Price: ${{this.price}}</div>
-        <div class="product-stock">Stock: {{this.stock}}</div>
-        <div class="product-category">Category: {{this.category}}</div>
-        <form action="/update-product" method="get">
-            <input type="hidden" name="productId" value="{{this.id}}">
-            <button class="submit-btn" type="submit">Edit product</button>
-        </form>
-        <form action="/delete-product" method="post">
-            <input type="hidden" name="productId" value="{{this.id}}">
-            <button class="delete-product" type="submit">Delete product</button>
-        </form>
-    </li>
-    {{/each}}
-</ul>
-{{else}}
-<p>No owned products found.</p>
-{{/if}}

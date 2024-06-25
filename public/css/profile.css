@@ -1,0 +1,112 @@
+body {
+    font-family: 'Segoe', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #b6b6b6;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 20px;
+}
+
+.outer-container {
+    display: flex;
+    flex-direction: column;
+    background-color: #555555;
+    border: 1px solid #ffffff;
+    padding: 20px;
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+    background-color: #2e2e2e;
+    border: 1px solid #ffffff;
+    padding: 20px;
+    width: 900px;
+    text-align: left;
+}
+
+.profile-container {
+    background-color: #2e2e2e;
+    padding: 20px;
+    width: 900px;
+    text-align: left;
+}
+
+h1 {
+    color: #ffffff;
+    margin: auto;
+}
+
+h2 {
+    color: #ffffff;
+}
+
+.menu-item {
+    display: block;
+    color: #ffffff;
+    text-decoration: none;
+    padding: 12px;
+    border: 2px solid #ffffff;
+    font-weight: 600;
+    text-align: center;
+    width: 60px;
+    max-height: 24px;
+    margin-top: 20px;
+    margin-right: 20px;
+    transition: background-color 0.35s, color 0.35s;
+}
+
+.menu-item:hover {
+    background-color: #ffffff;
+    color: #1e1e1e;
+}
+
+.menu-item:active {
+    background-color: #cccccc;
+    color: #1e1e1e;
+}
+
+ul.product-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+li.product-item {
+    background-color: #2e2e2e;
+    margin-bottom: 10px;
+    padding: 15px;
+    border: 1px solid #ffffff;
+}
+
+.item-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.submit-btn, .delete-product {
+    display: block;
+    color: #ffffff;
+    background-color: #2e2e2e;
+    text-decoration: none;
+    padding: 10px;
+    border: 2px solid #ffffff;
+    font-weight: 600;
+    margin-bottom: 10px;
+    width: 120px;
+    margin-top: 10px;
+    margin-right: 10px;
+    transition: background-color 0.35s, color 0.35s;
+}
+
+.submit-btn:hover, .delete-product:hover {
+    background-color: #ffffff;
+    color: #1e1e1e;
+}
+
+.submit-btn:active, .delete-product:active {
+    background-color: #cccccc;
+    color: #1e1e1e;
+}

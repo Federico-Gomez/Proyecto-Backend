@@ -1,0 +1,99 @@
+body {
+    font-family: 'Segoe', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #b6b6b6;
+    color: #9c9c9c;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.menu, .form-container, .profile-container, .cart-container, .product-list, .product-item {
+    background-color: #555555;
+    border: 1px solid #ffffff;
+    padding: 20px;
+    width: 300px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.menu-item, .submit-btn, .delete-product, .btn {
+    display: block;
+    color: #ffffff;
+    text-decoration: none;
+    padding: 10px;
+    border: 2px solid #ffffff;
+    font-weight: 600;
+    margin-bottom: 10px;
+    transition: background-color 0.35s, color 0.35s;
+}
+
+.menu-item:hover, .submit-btn:hover, .delete-product:hover, .btn:hover {
+    background-color: #ffffff;
+    color: #1e1e1e;
+}
+
+.menu-item:last-child, .submit-btn:last-child, .delete-product:last-child, .btn:last-child {
+    margin-bottom: 0;
+}
+
+.menu-item:active, .submit-btn:active, .delete-product:active, .btn:active {
+    background-color: #cccccc;
+    color: #1e1e1e;
+}
+
+form label {
+    display: block;
+    margin-bottom: 5px;
+    color: #ffffff;
+}
+
+form input, form button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+}
+
+form button {
+    cursor: pointer;
+}
+
+.profile-container h1, .profile-container h2, .product-list h2, .cart-container h1, .product-list h1, .product-list h3, .form-container h2 {
+    color: #ffffff;
+}
+
+.product-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.product-item {
+    background-color: #2e2e2e;
+    margin-bottom: 10px;
+    padding: 15px;
+    border: 1px solid #ffffff;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pagination-item {
+    margin: 0 10px;
+}
+
+.pagination-link {
+    color: #ffffff;
+    text-decoration: none;
+    border: 1px solid #ffffff;
+    padding: 5px 10px;
+    transition: background-color 0.35s, color 0.35s;
+}
+
+.pagination-link:hover {
+    background-color: #ffffff;
+    color: #1e1e1e;
+}

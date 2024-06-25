@@ -1,6 +1,6 @@
-<div>
-    <h1>{{user.email}} - Current Role: {{user.role}}</h1>
+<div class="form-container">
+    <h1>{{user.email}} <br> Role: {{user.role}}</h1>
     <form action="/api/users/premium/{{user._id}}" method="post">
-        <button type="submit">Switch to {{#if (eq user.role 'user')}}Premium{{else}}User{{/if}}</button>
+        <button class="submit-btn" type="submit">Switch to {{#if (eq user.role 'user')}}Premium{{else}}User{{/if}}</button>
     </form>
 </div>

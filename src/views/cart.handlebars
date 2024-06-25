@@ -1,10 +1,9 @@
-<h1>My Cart</h1>
-
-<div>
+<div class="cart-container">
+    <h1>My Cart</h1>
     <h3>Cart Items</h3>
-    <ul>
+    <ul class="product-list">
         {{#each cart.products}}
-        <li>
+        <li class="product-item">
             <h4>{{this._id.title}}</h4>
             <p>Description: {{this._id.description}}</p>
             <p>Price: ${{this._id.price}}</p>

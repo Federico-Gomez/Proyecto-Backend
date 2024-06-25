@@ -113,7 +113,10 @@ const createRouter = async () => {
 
             res.render('user_role_switch', {
                 title: 'Switch User Role',
-                user
+                user,
+                styles: [
+                    'user-role-switch.css'
+                ]
             });
 
         } catch (error) {

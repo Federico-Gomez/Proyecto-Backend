@@ -1,15 +1,15 @@
-<div>
+<div class="form-container">
     <form id="login-form" action="/api/sessions/login" method="post" enctype="application/x-www-form-urlencoded">
         <label for="_email">Email:</label>
-        <input type="email" name="email" id="_email">
+        <input type="email" name="email" id="_email" class="input-field">
 
         <label for="_pass">Password:</label>
-        <input type="password" name="password" id="_pass">
+        <input type="password" name="password" id="_pass" class="input-field">
 
         <input type="hidden" name="login_type" id="login_type" value="user">
 
-        <button type="submit">User Login</button>
-        <button type="button" onclick="setAdminLogin()">Admin Login</button>
+        <button class="submit-btn" type="submit">User Login</button>
+        <button class="submit-btn" type="button" onclick="setAdminLogin()">Admin Login</button>
     </form>
 </div>
 
@@ -19,3 +19,4 @@ function setAdminLogin() {
     document.getElementById('login-form').submit();
 }
 </script>
+

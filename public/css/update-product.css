@@ -1,64 +1,70 @@
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f5f5f5;
-    margin: 0;
-    padding: 0;
+    font-family: 'Segoe', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #b6b6b6;
+    color: #9c9c9c;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px;
 }
 
-#update-product {
-    max-width: 400px;
-    font-size: 22px;
+.form-container {
+    display: flex;
+    flex-direction: column;
+    background-color: #555555;
+    border: 1px solid #ffffff;
+    padding: 20px;
+    width: 350px;
     text-align: center;
-    margin: 30px auto;
-    padding: 10px 10px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    align-items: center;
 }
 
-#update-product-form {
-    background: #ffffff;
-    max-width: 400px;
-    margin: 50px auto;
-    padding: 30px 40px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+.input-field {
+    width: 300px;
 }
 
-#update-product-form label {
-    font-weight: 600;
+h2 {
+    color: #ffffff;
+}
+
+.submit-btn {
     display: block;
-    margin-bottom: 8px;
-    color: #333;
-}
-
-#update-product-form input[type="text"],
-#update-product-form input[type="number"] {
-    width: calc(100% - 20px);
+    color: #ffffff;
+    background-color: #555555;
+    text-decoration: none;
     padding: 10px;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
+    border: 2px solid #ffffff;
+    font-weight: 600;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    width: 324px;
+    transition: background-color 0.35s, color 0.35s;
 }
 
-#update-product-form button[type="submit"] {
+.submit-btn:hover {
+    background-color: #ffffff;
+    color: #1e1e1e;
+}
+
+.submit-btn:active {
+    background-color: #cccccc;
+    color: #1e1e1e;
+}
+
+form label {
+    display: block;
+    margin-bottom: 5px;
+    color: #ffffff;
+}
+
+form input,
+form button {
     width: 100%;
-    padding: 12px;
-    background-color: #28a745;
-    border: none;
-    border-radius: 4px;
-    color: white;
-    font-size: 16px;
+    padding: 10px;
+    margin-bottom: 15px;
+    justify-content: center;
+}
+
+form button {
     cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-#update-product-form button[type="submit"]:hover {
-    background-color: #218838;
-}
-
-#update-product-form input:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-    outline: none;
 }

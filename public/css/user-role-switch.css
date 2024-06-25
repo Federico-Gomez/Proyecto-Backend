@@ -5,7 +5,12 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 20px;
+    height: 100vh;
+    margin: 0;
+}
+
+h1 {
+    font-weight: 400;
 }
 
 .form-container {
@@ -14,31 +19,24 @@ body {
     background-color: #555555;
     border: 1px solid #ffffff;
     padding: 20px;
-    width: 350px;
+    width: 300px;
+    font-size: 10px;
     text-align: center;
     align-items: center;
 }
 
-.input-field {
-    width: 300px;
-}
-
-h2 {
-    color: #ffffff;
-}
-
 .submit-btn {
-    display: block;
+    display: flex;
     color: #ffffff;
-    background-color: #555555;
+    background-color: #1e1e1e;
     text-decoration: none;
     padding: 10px;
     border: 2px solid #ffffff;
     font-weight: 600;
     margin-bottom: 10px;
     margin-top: 10px;
-    width: 324px;
     transition: background-color 0.35s, color 0.35s;
+    justify-content: center;
 }
 
 .submit-btn:hover {
@@ -51,20 +49,12 @@ h2 {
     color: #1e1e1e;
 }
 
-form label {
-    display: block;
-    margin-bottom: 5px;
+h1 {
     color: #ffffff;
-}
-
-form input,
-form button {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    justify-content: center;
 }
 
 form button {
     cursor: pointer;
+    width: 160px;
+    padding: 10px;
 }
