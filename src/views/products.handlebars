@@ -2,14 +2,27 @@
 
 {{#if isLoggedIn}}
 {{#if isAdmin}}
-<h3>Bienvenido Admin: {{email}} Role: {{role}}</h3>
+<h3>Bienvenido Admin - Username: {{email}} - Role: {{role}}</h3>
 <a href="/api/sessions/logout">Logout</a>
 <form action="/create-product" method="get">
     <input type="hidden" name="productId" value="{{this.id}}">
     <button class="submit-btn" type="submit">New product</button>
 </form>
+{{else if isPremium}}
+<h3>Bienvenido {{firstName}} {{lastName}} - Username: {{email}} - Role: {{role}} - Cart ID: {{cartId}}</h3>
+<div>
+    <a href="/profile">My Profile</a>
+    <a href="/api/sessions/logout">Logout</a>
+    <form action="/create-product" method="get">
+        <input type="hidden" name="productId" value="{{this.id}}">
+        <button class="submit-btn" type="submit">New product</button>
+    </form>
+    <form action="/api/carts/{{cartId}}" method="get">
+        <button class="submit-btn" type="submit">My Cart</button>
+    </form>
+</div>
 {{else}}
-<h3>Bienvenido {{firstName}} {{lastName}} ({{email}}) - Role: {{role}} - Cart ID: {{cartId}}</h3>
+<h3>Bienvenido {{firstName}} {{lastName}} - Username: ({{email}}) - Role: {{role}} - Cart ID: {{cartId}}</h3>
 <div>
     <a href="/profile">My Profile</a>
     <a href="/api/sessions/logout">Logout</a>
@@ -39,6 +52,33 @@
             <input type="hidden" name="productId" value="{{this.id}}">
             <button class="delete-product" type="submit">Delete product</button>
         </form>
+    </li>
+    {{/each}}
+    {{else if isPremium}}
+    {{#each payload}}
+    <li class="product-item">
+        <div class="product-title">{{this.title}}</div>
+        <div class="product-description">{{this.description}}</div>
+        <div class="product-price">Price: ${{this.price}}</div>
+        <div class="product-stock">Stock: {{this.stock}}</div>
+        <div class="product-category">Category: {{this.category}}</div>
+        {{#if (eq this.owner ../email)}}
+        <form action="/update-product" method="get">
+            <input type="hidden" name="productId" value="{{this.id}}">
+            <button class="submit-btn" type="submit">Edit product</button>
+        </form>
+        <form action="/delete-product" method="post">
+            <input type="hidden" name="productId" value="{{this.id}}">
+            <button class="delete-product" type="submit">Delete product</button>
+        </form>
+        {{else}}
+        <form action="/add-to-cart" method="post">
+            <input type="hidden" name="productId" value="{{this.id}}">
+            <label for="quantity-{{this.id}}">Quantity:</label>
+            <input type="number" id="quantity-{{this.id}}" name="quantity" min="1" value="1" required>
+            <button class="submit-btn" type="submit">Add to Cart</button>
+        </form>
+        {{/if}}
     </li>
     {{/each}}
     {{else}}

@@ -62,6 +62,16 @@ module.exports = {
         next();
     },
 
+
+    // Middleware para chequaer si un usuario es Admin o Premium
+    isAdminOrPremium: (req, res, next) => {
+        if (req.session && req.session.user && ['admin', 'premium'].includes(req.session.user.role)) {
+            return next();
+        } else {
+            return res.status(400).json({ message: 'Forbidden: Product creation is restricted to Admins or Premium users only' });
+        }
+    },
+
     isOwnerOrAdmin: (req, res, next) => {
         const { user } = req.session;
         const { productId } = req.params;
@@ -76,6 +86,8 @@ module.exports = {
             } else {
                 return res.status(403).json({ message: 'Forbidden: Owners or Admins only' });
             }
+        }).catch(err => {
+            res.status(500).json({ message: 'Product not found or server error' });
         });
     }
 }

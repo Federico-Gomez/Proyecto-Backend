@@ -45,7 +45,7 @@ const router = Router();
 router.post('/login', checkLoginType, passport.authenticate('login', { failureRedirect: '/api/sessions/fail_login' }), async (req, res) => {
     console.log(req.body);
 
-    req.session.user = { email: req.user.email, _id: req.user._id.toString(), role: 'user' };
+    req.session.user = { email: req.user.email, _id: req.user._id.toString(), role: req.user.role };
     res.redirect('/products');
 
 });

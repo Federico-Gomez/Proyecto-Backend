@@ -4,7 +4,7 @@ const { Server } = require('socket.io');
 const { Product } = require('../dao/models');
 const { Cart } = require('../dao/models');
 const { User } = require('../dao/models');
-const { userIsLoggedIn, userIsNotLoggedIn, isAdmin, isAuthenticated, isNotAdmin } = require('../middlewares/auth.middleware');
+const { userIsLoggedIn, userIsNotLoggedIn, isAdmin, isAuthenticated, isNotAdmin, isAdminOrPremium } = require('../middlewares/auth.middleware');
 const { productServices, cartServices, ticketServices } = require('../services');
 const UserDTO = require('../utils/DTOs/userDTO');
 const ticketController = require('../controllers/ticket.controller');
@@ -115,14 +115,14 @@ const createRouter = async () => {
         });
     });
 
-    router.get('/reset_password/:token', userIsNotLoggedIn, async (req,res) => {
+    router.get('/reset_password/:token', userIsNotLoggedIn, async (req, res) => {
         const { token } = req.params;
         const decoded = verifyPasswordResetToken(token);
 
         if (!decoded) {
-            return res.redirect('/request:password_reset');
+            return res.redirect('/api/sessions/request_password_reset');
         }
-        
+
         req.logger.info('Rendering reset password page');
         res.render('reset_password', {
             title: 'Reset Password',
@@ -138,22 +138,33 @@ const createRouter = async () => {
     });
 
     router.get('/profile', userIsLoggedIn, async (req, res) => {
-        const idFromSession = req.session.user._id;
+        try {
+            const idFromSession = req.session.user._id;
 
-        const user = await User.findOne({ _id: idFromSession });
+            const user = await User.findOne({ _id: idFromSession });
 
-        req.logger.info(`Rendering profile page for user: ${user.email}`);
+            const ownedProducts = await Product.find({ owner: user.email });
 
-        res.render('profile', {
-            title: 'My profile',
-            user: {
-                firstName: user.firstName,
-                lastName: user.lastName,
-                age: user.age,
-                email: user.email,
-                cartId: user.cartId
-            }
-        });
+            req.logger.info(`Rendering profile page for user: ${user.email}`);
+
+            res.render('profile', {
+                title: 'My profile',
+                user: {
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    age: user.age,
+                    email: user.email,
+                    role: user.role,
+                    cartId: user.cartId
+                },
+                ownedProducts,
+                styles: ['products.css']
+            });
+
+        } catch (error) {
+            req.logger.error('Error retrieving user profile', error);
+            res.status(500).json({ status: 'error', error: 'Error retrieving profile' });
+        }
     });
 
     router.get('/chat', isNotAdmin, (req, res) => {
@@ -320,6 +331,7 @@ const createRouter = async () => {
         try {
             const isLoggedIn = ![null, undefined].includes(req.session.user);
             const isAdmin = req.session.user.role === 'admin';
+            const isPremium = req.session.user.role === 'premium';
 
             let firstName = '';
             let lastName = '';
@@ -362,6 +374,14 @@ const createRouter = async () => {
             // Perform paginated query for products
             const result = await Product.paginate(conditions, options);
 
+            // Check ownership for each product
+            const payload = result.docs.map(product => {
+                return {
+                    ...product,
+                    owner: product.owner
+                }
+            });
+
             req.logger.info('Rendering products page with filters');
 
             // Send response with the specified format
@@ -369,6 +389,7 @@ const createRouter = async () => {
                 title: 'Product List',
                 isLoggedIn,
                 isAdmin,
+                isPremium,
                 firstName,
                 lastName,
                 cartId,
@@ -376,7 +397,7 @@ const createRouter = async () => {
                 role: req.session.user.role,
                 isNotLoggedIn: !isLoggedIn,
                 status: 'success',
-                payload: result.docs,
+                payload,
                 totalPages: result.totalPages,
                 prevPage: result.prevPage,
                 nextPage: result.nextPage,
@@ -416,7 +437,7 @@ const createRouter = async () => {
         return res.json(userDTO);
     });
 
-    router.get('/create-product', isAdmin, async (req, res) => {
+    router.get('/create-product', isAdminOrPremium, async (req, res) => {
         try {
             req.logger.info('Rendering create-product page');
             res.render('create-product', {
@@ -430,7 +451,7 @@ const createRouter = async () => {
         }
     });
 
-    router.get('/update-product', isAdmin, async (req, res) => {
+    router.get('/update-product', isAdminOrPremium, async (req, res) => {
         try {
             req.logger.info('Rendering update-product page');
             res.render('update-product', {

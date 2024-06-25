@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const { Product } = require('../dao/models');
 const { productServices } = require('../services');
-const { isAdmin, isOwnerOrAdmin } = require('../middlewares/auth.middleware');
+const { isAdmin, isOwnerOrAdmin, isAdminOrPremium } = require('../middlewares/auth.middleware');
 const { invalidProductDataError}  = require('../services/errors/productError');
 const { CustomError } = require('../services/errors/CustomError');
 const { ErrorCodes } = require('../services/errors/errorCodes');
@@ -136,11 +136,12 @@ const createRouter = async () => {
         }
     });
 
-    router.post('/', isAdmin, async (req, res, next) => {
+    router.post('/', isAdminOrPremium, async (req, res, next) => {
         try {
             const { title, description, price, thumbnails, code, stock, category } = req.body;
             const { user } = req.session;
             const owner = user.role === 'admin' ? 'admin' : user.email;
+
             if (!title || !description || !code || !price || isNaN(stock) || stock < 0 || !category) {
                 const errorMessage = invalidProductDataError({ title, description, price, thumbnails, code, stock, category });
                 return next(CustomError.createError({
@@ -164,7 +165,7 @@ const createRouter = async () => {
         }
     });
 
-    router.put('/:pid', isAdmin, async (req, res) => {
+    router.put('/:pid', isOwnerOrAdmin, async (req, res) => {
         try {
             // const productDAO = req.app.get('productDAO');
             const productId = req.params.pid;
