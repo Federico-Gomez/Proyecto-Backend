@@ -28,12 +28,12 @@
                     <div class="product-category">Category: {{this.category}}</div>
                 </div>
                 <div>
-                    <form action="/update-product" method="get">
-                        <input type="hidden" name="productId" value="{{this.id}}">
+                    <form action="/update-product/{{this.id}}" method="get">
+                        <!-- input type="hidden" name="productId" value="{{this.id}}" -->
                         <button class="submit-btn" type="submit">Edit product</button>
                     </form>
-                    <form action="/delete-product" method="post">
-                        <input type="hidden" name="productId" value="{{this.id}}">
+                    <form action="/api/products/{{this.id}}?_method=DELETE" method="post">
+                        <!-- input type="hidden" name="productId" value="{{this.id}}" -->
                         <button class="delete-product" type="submit">Delete product</button>
                     </form>
                 </div>

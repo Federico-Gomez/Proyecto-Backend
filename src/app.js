@@ -1,4 +1,5 @@
 const express = require('express');
+const methodOverride = require('method-override');
 const mongoose = require('mongoose');
 const exphbs = require('express-handlebars');
 const { Server } = require('socket.io');
@@ -45,6 +46,7 @@ const { createRouter: createMessagesRouter } = require('./routes/messages.router
 const sessionsRouter = require('./routes/session.router');
 // const petsRouter = require('./routes/pets.router');
 
+app.use(methodOverride('_method'));
 app.use(sessionMiddleware);
 app.use(cookieParser());
 app.use(configureCustomResponses);

@@ -54,7 +54,7 @@
                 <button class="submit-btn" type="submit">Edit product</button>
             </form>
             <form action="/api/products/{{this.id}}?_method=DELETE" method="post">
-                <input type="hidden" name="pid" value="{{this.id}}">
+                <!-- input type="hidden" name="pid" value="{{this.id}}" -->
                 <button class="delete-product" type="submit">Delete product</button>
             </form>
         </li>
@@ -74,8 +74,8 @@
                 <input type="hidden" name="productId" value="{{this.id}}">
                 <button class="submit-btn" type="submit">Edit product</button>
             </form>
-            <form action="//api/products/{{this.id}}?_method=DELETE" method="post">
-                <input type="hidden" name="productId" value="{{this.id}}">
+            <form action="/api/products/{{this.id}}?_method=DELETE" method="post">
+                <!-- input type="hidden" name="productId" value="{{this.id}}" -->
                 <button class="delete-product" type="submit">Delete product</button>
             </form>
             {{else}}

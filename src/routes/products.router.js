@@ -96,7 +96,7 @@ const createRouter = async () => {
 
             // Perform paginated query for products
             const result = await Product.paginate(conditions, options);
-            req,logger.info(result);
+            req.logger.info(result);
 
             const prevLink = result.hasPrevPage ? `/api/products?limit=${limit}&page=${result.prevPage}` : null;
             const nextLink = result.hasNextPage ? `/api/products?limit=${limit}&page=${result.nextPage}` : null;

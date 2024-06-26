@@ -43,7 +43,7 @@ const router = Router();
 //Login con Passport Sessions
 
 router.post('/login', checkLoginType, passport.authenticate('login', { failureRedirect: '/api/sessions/fail_login' }), async (req, res) => {
-    console.log(req.body);
+    console.log("KAINE: " + req.body);
 
     req.session.user = { email: req.user.email, _id: req.user._id.toString(), role: req.user.role };
     res.redirect('/products');

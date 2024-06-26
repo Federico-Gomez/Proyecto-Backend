@@ -47,6 +47,10 @@ module.exports = {
 
     // Middleware to check if the user is an admin
     isAdmin: (req, res, next) => {
+        console.log(req.session)
+        console.log(req.session.user)
+        console.log(req.session.user.role)
+        
         if (req.session && req.session.user && req.session.user.role === 'admin') {
             return next();
         } else {
@@ -65,6 +69,11 @@ module.exports = {
 
     // Middleware para chequaer si un usuario es Admin o Premium
     isAdminOrPremium: (req, res, next) => {
+        console.log(req.session)
+        console.log(req.session.user)
+        console.log(req.session.user.role)
+        console.log(next)
+
         if (req.session && req.session.user && ['admin', 'premium'].includes(req.session.user.role)) {
             return next();
         } else {
@@ -73,12 +82,13 @@ module.exports = {
     },
 
     isOwnerOrAdmin: (req, res, next) => {
-        const { user } = req.session;
-        const { pid: productId } = req.params;
+        console.log(req.session)
+        console.log(req.session.user)
+        console.log(req.session.user.role)
+        console.log(req.session.user.role)
 
-        if (!user) {
-            return res.status(401).json({ message: 'Unauthorized' });
-        }
+        const { user } = req.session;
+        const productId = req.params.pid;
 
         Product.findById(productId).then((product) => {
             if (!product) {

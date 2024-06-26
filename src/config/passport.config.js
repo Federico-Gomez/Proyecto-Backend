@@ -45,7 +45,7 @@ const initializeStrategy = () => {
     passport.use('login', new Strategy({
         usernameField: 'email'
     }, async (username, password, done) => {
-
+        console.log('EMIL:' + username);
         try {
             if (!username || !password) {
                 return done(null, false);

@@ -4,7 +4,7 @@ const { Server } = require('socket.io');
 const { Product } = require('../dao/models');
 const { Cart } = require('../dao/models');
 const { User } = require('../dao/models');
-const { userIsLoggedIn, userIsNotLoggedIn, isAdmin, isAuthenticated, isNotAdmin, isAdminOrPremium } = require('../middlewares/auth.middleware');
+const { userIsLoggedIn, userIsNotLoggedIn, isAdmin, isAuthenticated, isNotAdmin, isAdminOrPremium, isOwnerOrAdmin } = require('../middlewares/auth.middleware');
 const { productServices, cartServices, ticketServices } = require('../services');
 const UserDTO = require('../utils/DTOs/userDTO');
 const ticketController = require('../controllers/ticket.controller');
@@ -227,7 +227,7 @@ const createRouter = async () => {
         }
     });
 
-    router.get('/realtimeproducts', async (req, res) => {
+    router.get('/realtimeproducts', isAdmin, async (req, res) => {
         try {
             // const productsData = await fs.readFile(`${__dirname}/../../assets/Products.json`);
             // const products = JSON.parse(productsData);
@@ -243,8 +243,7 @@ const createRouter = async () => {
                 useWS: true, // Establecemos useWS en verdadero
                 scripts: [
                     'realTimeProducts.js',
-                ],
-                styles: ['products.css']
+                ]
             });
 
         } catch (error) {
@@ -253,7 +252,7 @@ const createRouter = async () => {
         }
     });
 
-    router.get('/realtimecarts', async (req, res) => {
+    router.get('/realtimecarts', isAdminOrPremium, async (req, res) => {
         try {
 
             // const cartDAO = req.app.get('cartDAO');
@@ -466,9 +465,10 @@ const createRouter = async () => {
         }
     });
 
-    router.get('/update-product', isAdminOrPremium, async (req, res) => {
+    router.get('/update-product/:pid',  async (req, res) => {
         try {
-            const productId = req.query.pid;
+            const productId = req.params.pid;
+            console.log('Update product:' + productId);
             const product = await productServices.getProductById(productId);
 
             if (!product) {
