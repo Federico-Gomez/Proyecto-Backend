@@ -49,8 +49,8 @@
             <div class="product-stock">Stock: {{this.stock}}</div>
             <div class="product-category">Category: {{this.category}}</div>
             <br>
-            <form action="/update-product" method="get">
-                <input type="hidden" name="pid" value="{{this.id}}">
+            <form action="/update-product/{{this.id}}" method="get">
+                <!-- input type="hidden" name="pid" value="{{this.id}}"-->
                 <button class="submit-btn" type="submit">Edit product</button>
             </form>
             <form action="/api/products/{{this.id}}?_method=DELETE" method="post">
@@ -70,8 +70,8 @@
             <div class="product-category">Category: {{this.category}}</div>
             <br>
             {{#if (eq this.owner ../email)}}
-            <form action="/update-product" method="get">
-                <input type="hidden" name="productId" value="{{this.id}}">
+            <form action="/update-product/{{this.id}}" method="get">
+                <!-- input type="hidden" name="productId" value="{{this.id}}" -->
                 <button class="submit-btn" type="submit">Edit product</button>
             </form>
             <form action="/api/products/{{this.id}}?_method=DELETE" method="post">

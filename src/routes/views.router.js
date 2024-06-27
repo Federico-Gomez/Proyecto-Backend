@@ -465,7 +465,7 @@ const createRouter = async () => {
         }
     });
 
-    router.get('/update-product/:pid',  async (req, res) => {
+    router.get('/update-product/:pid', isOwnerOrAdmin, async (req, res) => {
         try {
             const productId = req.params.pid;
             console.log('Update product:' + productId);
