@@ -1,0 +1,142 @@
+paths:
+  /api/users/:
+    get:
+      summary: Devuelve el listado de usuarios
+      tags:
+        - Users
+      responses: 
+        "200":
+          description: 'Operación de obtención de usuarios exitosa'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#components/schemas/User'
+
+        '500':
+          description: 'Error interno'
+
+  /api/users/{uid}:
+    get:
+      summary: Devuelve un único usuario por id
+      tags:
+        - Users
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          description: id del usuario que se desea obtener
+          schema:
+            $type: string
+
+      responses: 
+        "200":
+          description: 'Operación de obtención de usuario por su id exitosa'
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#components/schemas/User'
+
+        '500':
+          description: 'Error interno'
+    put:
+      summary: Actualiza un usuario a partir de su id
+      tags:
+        - Users
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          description: id del usuario que se desea actualizar
+          schema:
+            $type: string
+            
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: '#components/requestBodies/updateUser'
+      
+      responses: 
+        "200":
+          description: 'Operación de actualización de usuario por su id exitosa'
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#components/schemas/User'
+
+        '500':
+          description: 'Error interno'
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: ID del usuario autogenerado por Mongo
+        firstName:
+          type: string
+          description: nombre del usuario
+        lastName:
+          type: string
+          description: apellido del usuario
+        age:
+          type: Number
+          description: edad del usuario (años)
+        email:
+          type: string
+          description: email del usuario
+        password:
+          type: string
+          description: password del usuario hasheado por bcrypt
+        role:
+          type: string
+          description: rol del usuario
+        cartId:
+          type: string
+          description: ID del cart asociado al usuario, autogenerado por Mongo
+      example:
+        _id: "66475ccacc3395e5abdbb816"
+        firstName: "Federico"
+        lastName: "Gómez"
+        age: 44
+        email: "fedehgz@hotmail.com"
+        password: "$2b$10$Dtz6CL1ELZNCrvp3ikgmZepHRnwxMSLzsqyq86JTQB13PpuWC36oC"
+        role: "premium"
+        cartId: "66475ccacc3395e5abdbb813"
+  requestBodies:
+    updateUser:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: ID del usuario autogenerado por Mongo
+        firstName:
+          type: string
+          description: nombre del usuario
+        lastName:
+          type: string
+          description: apellido del usuario
+        age:
+          type: Number
+          description: edad del usuario (años)
+        email:
+          type: string
+          description: email del usuario
+        role:
+          type: string
+          description: rol del usuario
+      example:
+        firstName: "Aerith"
+        lastName: "Gainsborough"
+        age: 22
+        email: "aerith_capa@gmail.com"
+        role: "premium"
+

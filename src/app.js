@@ -10,9 +10,27 @@ const path = require('path');
 const compression = require('express-compression');
 const { errorHandler } = require('./services/errors/errorHandler');
 const { useLogger } = require('./utils/logger');
+const swaggerJSDoc = require('swagger-jsdoc');
+const { serve, setup } = require('swagger-ui-express')
+
 
 const config = require('../config');
 console.log(config);
+
+const swaggerOptions = {
+    definition: {
+        openapi: '3.0.1',
+        info: {
+            title: 'Ecommerce API',
+            description: 'API para backend de ecommerce'
+        }
+    },
+    apis: [
+        `${__dirname}/docs/**/*.yaml`
+    ]
+};
+
+const specs = swaggerJSDoc(swaggerOptions);
 
 // Managers
 const FilesProductDAO = require('./dao/fileDAO/fileProductDAO');
@@ -27,6 +45,7 @@ const app = express();
 
 // Handle the favicon.ico request
 app.get('/favicon.ico', (_, res) => res.status(204));
+app.use('/apidocs', serve, setup(specs));
 
 // Sessions
 const sessionMiddleware = require('./session/mongoStorage');

@@ -72,7 +72,6 @@ module.exports = {
         console.log(req.session)
         console.log(req.session.user)
         console.log(req.session.user.role)
-        console.log(next)
 
         if (req.session && req.session.user && ['admin', 'premium'].includes(req.session.user.role)) {
             return next();
@@ -84,7 +83,6 @@ module.exports = {
     isOwnerOrAdmin: (req, res, next) => {
         console.log(req.session)
         console.log(req.session.user)
-        console.log(req.session.user.role)
         console.log(req.session.user.role)
 
         const { user } = req.session;

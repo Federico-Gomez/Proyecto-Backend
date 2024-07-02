@@ -114,6 +114,16 @@ const createRouter = async () => {
     //     });
     // });
 
+    router.get('/request_reset_password', userIsNotLoggedIn, async (req, res) => {
+        req.logger.info('Rendering reset password page');
+        res.render('request_reset_password', {
+            title: 'Reset Password',
+            styles: [
+                'reset-password.css'
+            ]
+        });
+    });
+
     router.get('/reset_password', userIsNotLoggedIn, async (req, res) => {
         req.logger.info('Rendering reset password page');
         res.render('reset_password', {

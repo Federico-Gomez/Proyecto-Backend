@@ -1,5 +1,5 @@
 body {
-    font-family: 'Segoe', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Montserrat', sans-serif;
     background-color: #b6b6b6;
     color: #ffffff;
     display: flex;
@@ -52,7 +52,7 @@ h2 {
     font-weight: 600;
     text-align: center;
     width: 60px;
-    max-height: 24px;
+    max-height: 18px;
     margin-top: 20px;
     margin-right: 20px;
     transition: background-color 0.35s, color 0.35s;

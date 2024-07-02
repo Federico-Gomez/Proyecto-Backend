@@ -1,12 +1,13 @@
 <div class="menu">
     {{#if isLoggedIn}}
     <a href="/profile" class="menu-item">My Profile</a>
+    <a href="/products" class="menu-item">Back to Store</a>
     <a href="/api/sessions/logout" class="menu-item">Logout</a>
     {{/if}}
 
     {{#if isNotLoggedIn}}
     <a href="/login" class="menu-item">Login</a>
-    <a href="/reset_password" class="menu-item">Reset Password</a>
+    <a href="/request_reset_password" class="menu-item" type="submit">Reset Password</a>
     <a href="/api/sessions/github" class="menu-item">Login with GitHub</a>
     <a href="/register" class="menu-item">Register</a>
     {{/if}}

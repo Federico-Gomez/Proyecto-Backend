@@ -1,0 +1,237 @@
+paths:
+  /api/products/:
+    get:
+      summary: Devuelve el listado de todos los productos
+      tags:
+        - Products
+      responses:
+        "200":
+          description: 'Operación de obtención de productos de la base de datos exitosa'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  title: 
+                    type: string
+                    example: "Product List"
+                  status: 
+                    type: string
+                    example: "success"
+                  payload:
+                    type: array
+                    items:
+                      $ref: '#components/schemas/Product'
+
+        '500':
+          description: 'Error interno'
+    post:
+      summary: Crea un producto y lo agrega a la base de datos
+      tags:
+        - Products
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: '#components/requestBodies/createProduct'
+
+      responses:
+        "200":
+          description: 'Operación de creación de producto exitosa'
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#components/schemas/Product'
+
+        '500':
+          description: 'Error interno'
+
+  /api/products/{pid}:
+    get:
+      summary: Devuelve un producto por su id
+      tags:
+        - Products
+      parameters:
+        - name: pid
+          in: path
+          required: true
+          description: id del producto que se desea obtener
+          schema:
+            $type: string
+      responses:
+        "200":
+          description: 'Operación de obtención de producto de la base de datos exitosa'
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#components/schemas/Product'
+
+        '500':
+          description: 'Error interno'
+    put:
+      summary: Actualiza un producto en la base de datos por su id
+      tags:
+        - Products
+      parameters:
+        - name: pid
+          in: path
+          required: true
+          description: id del producto que se desea actualizar
+          schema:
+            $type: string
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: '#components/requestBodies/updateProduct'
+
+      responses:
+        "200":
+            description: 'Operación de actualización de producto por su id exitosa'
+            content:
+              application/json:
+                schema:
+                  type: object
+                  $ref: '#components/schemas/Product'
+
+        '500':
+          description: 'Error interno'
+    delete:
+      summary: Elimina un producto de la base de datos por su id
+      tags:
+        - Products
+      parameters:
+        - name: pid
+          in: path
+          required: true
+          description: id del producto que se desea eliminar
+          schema:
+            $type: string
+      responses:
+        "200":
+          description: 'Operación de eliminación de producto exitosa'
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#components/schemas/Product'
+
+        '500':
+          description: 'Error interno'
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: ID del producto, autogenerado por Mongo
+        title:
+          type: string
+          description: nombre del producto
+        description:
+          type: string
+          description: descripción del producto
+        price:
+          type: Number
+          description: precio del producto
+        thumbnails:
+          type: string
+          description: link a la URL de las imágenes del producto
+        code:
+          type: string
+          description: código del producto
+        stock:
+          type: Number
+          description: cantidad del producto en stock
+        category:
+          type: string
+          description: categoría a la que pertenece el producto
+        owner:
+          type: string
+          description: usuario al que pertenece el producto
+      example:
+        _id: "661945da63af7211c9f442d2"
+        title: "Fantastic Plastic Sausages"
+        description: "Artificiose condico surculus artificiose cogito vulgus vestrum collum terror ager."
+        price: 57
+        thumbnails: "https://picsum.photos/seed/KHFtfjO2/640/480"
+        code: "83016939-78f8-45a1-8622-b72aa660575d"
+        stock: 88
+        category: "Apparel"
+        owner: "admin"
+  requestBodies:
+    createProduct:
+      type: object
+      properties:
+        title:
+          type: string
+          description: nombre del producto
+        description:
+          type: string
+          description: descripción del producto
+        price:
+          type: Number
+          description: precio del producto
+        thumbnails:
+          type: string
+          description: link a las imágenes del producto
+        code:
+          type: string
+          description: código del producto
+        stock:
+          type: Number
+          description: cantidad del producto en stock
+        category:
+          type: string
+          description: categoría a la que pertenece el producto
+      example:
+        title: "Fantastic Plastic Sausages"
+        description: "Artificiose condico surculus artificiose cogito vulgus vestrum collum terror ager."
+        price: 57
+        thumbnails: "https://picsum.photos/seed/KHFtfjO2/640/480"
+        code: "83016939-78f8-45a1-8622-b72aa660575d"
+        stock: 88
+        category: "Apparel"
+    updateProduct:
+      type: object
+      properties:
+        title:
+          type: string
+          description: nombre del producto
+        description:
+          type: string
+          description: descripción del producto
+        price:
+          type: Number
+          description: precio del producto
+        thumbnails:
+          type: string
+          description: link a las imágenes del producto
+        code:
+          type: string
+          description: código del producto
+        stock:
+          type: Number
+          description: cantidad del producto en stock
+        category:
+          type: string
+          description: categoría a la que pertenece el producto
+      example:
+        title: "Fantastic Plastic Sausages"
+        description: "Artificiose condico surculus artificiose cogito vulgus vestrum collum terror ager."
+        price: 57
+        thumbnails: "https://picsum.photos/seed/KHFtfjO2/640/480"
+        code: "83016939-78f8-45a1-8622-b72aa660575d"
+        stock: 88
+        category: "Apparel"
+
+
