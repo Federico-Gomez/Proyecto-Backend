@@ -24,7 +24,27 @@ paths:
 
   /api/carts/{cid}:
     get:
-      summary: devuelve un cart por su id
+      summary: devuelve y renderiza un cart por su id
+      description: >
+        Fetches a cart by its ID and renders the 'cart' Handlebars view. 
+        The rendered view includes the following details:
+        - **Cart Items**: Displays a list of products in the cart, each with:
+          - Title
+          - Description
+          - Price
+          - Thumbnails
+          - Code
+          - Stock
+          - Quantity
+        - **Actions**: 
+          - Delete product button for each product
+          - Back to Store link
+          - Purchase Cart button
+        - **Scripts Included**: 
+          - `delete-product.js`: Handles the deletion of products from the cart.
+          - `purchase-cart.js`: Manages the purchase process for the cart.
+        - **Styles Included**: 
+          - `cart.css`: Styles the cart view for better user experience.
       tags:
       - Carts
       security:
@@ -254,7 +274,7 @@ paths:
         - name: cid
           in: path
           required: true
-          description: id del cart en el que se desea eliminar el producto
+          description: id del cart que se desea comprar
           schema:
             type: string
 
@@ -395,8 +415,9 @@ components:
         quantity:
           type: integer
 
-securitySchemes:
-  CookieAuth:
-    type: apiKey
-    in: cookie
-    name: connect.sid
+  securitySchemes:
+    CookieAuth:
+      type: apiKey
+      in: cookie
+      name: connect.sid
+      description: Authentication via session cookie

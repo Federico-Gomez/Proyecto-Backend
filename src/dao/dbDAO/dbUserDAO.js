@@ -72,7 +72,10 @@ class UserDAO {
     async deleteUser(userId) {
         try {
             const userToDelete = await User.deleteOne(userId);
-            return userToDelete.toObject() ?? false;
+            if (userToDelete.deletedCount === 0) {
+                throw new Error('User not found');
+            }
+            return userToDelete;
         } catch (error) {
             logger.error('Error deleting user in DAO:', error);
             throw new Error('Error deleting user: ' + error.message);

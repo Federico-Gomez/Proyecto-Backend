@@ -22,6 +22,30 @@ paths:
                     type: array
                     items:
                       $ref: '#components/schemas/Product'
+                  totalPages: 
+                    type: integer
+                    description: total number of pages of products with current pagination settings
+                    example: 38
+                  prevPage: 
+                    type: integer
+                    description: previous page index
+                    example: 1
+                  nextPage: 
+                    type: integer
+                    description: next page index
+                    example: 3
+                  page: 
+                    type: integer
+                    description: current page index
+                    example: 2
+                  hasPrevPage: 
+                    type: link
+                    description: link to previous page index
+                    example: "/api/products?limit=10&page=1"
+                  hasNextPage: 
+                    type: link
+                    description: link to next page index
+                    example: "/api/products?limit=10&page=3"
 
         '500':
           description: 'Error interno'
@@ -29,6 +53,8 @@ paths:
       summary: Crea un producto y lo agrega a la base de datos
       tags:
         - Products
+      security:
+        - CookieAuth: []
       requestBody:
         required: true
         content:
@@ -76,6 +102,8 @@ paths:
       summary: Actualiza un producto en la base de datos por su id
       tags:
         - Products
+      security:
+        - CookieAuth: []
       parameters:
         - name: pid
           in: path
@@ -107,6 +135,8 @@ paths:
       summary: Elimina un producto de la base de datos por su id
       tags:
         - Products
+      security:
+        - CookieAuth: []
       parameters:
         - name: pid
           in: path
@@ -233,5 +263,9 @@ components:
         code: "83016939-78f8-45a1-8622-b72aa660575d"
         stock: 88
         category: "Apparel"
-
-
+  securitySchemes:
+    CookieAuth:
+      type: apiKey
+      in: cookie
+      name: connect.sid
+      description: Authentication via session cookie
