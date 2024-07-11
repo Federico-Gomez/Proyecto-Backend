@@ -15,7 +15,7 @@ describe('Sessions API', function () {
         this.timeout(10000);
         // Connect to a test database
         const mongoConnection = await mongoose.connect(config.MONGO_URI, {
-            dbName: 'ecommerce'
+            dbName: 'ecommerce' // base de datos a la que conecta la función main() de app.js, para que funcionen los tests de Sessions. ADVERTENCIA: si se activan los hooks after y beforeEach se perderán todas las collections. 
         });
 
         connection = mongoConnection.connection;
@@ -43,7 +43,7 @@ describe('Sessions API', function () {
                 firstName: 'Carlos',
                 lastName: 'Kinto',
                 age: 34,
-                email: 'carloskinto@gmail.com',
+                email: 'carloskinto2@gmail.com',
                 password: 'carlos123'
             });
 
