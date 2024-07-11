@@ -48,7 +48,7 @@ describe('Carts API', function () {
 
     // Test POST /api/carts endpoint
     describe('POST /api/carts', function () {
-        it('should allow admin user to create a cart', async function () {
+        it('debe permitir a un premium user crear un cart', async function () {
             const response = await adminAgent
                 .post('/api/carts');
 
@@ -72,7 +72,7 @@ describe('Carts API', function () {
 
     // Test GET /api/carts/:cid endpoint >>> Ir al endpoint api/carts/:cid en carts.router.js y modificar la response (cambiar de render a json)
     describe('GET /api/carts/:cid', function () {
-        it('should allow authenticated user to get a cart', async function () {
+        it('debe permitir a un usuario autenticado obtener un cart por su id', async function () {
             const response = await userAgent
                 .get(`/api/carts/${cartId}`);
 
@@ -91,7 +91,7 @@ describe('Carts API', function () {
             assert.strictEqual(response.body.cart._id, cartId, 'Cart ID does not match');
         });
 
-        it('should return 404 for a non-existing cart', async function () {
+        it('sdebe devolver 404 si no existe el cart', async function () {
             const response = await userAgent
                 .get('/api/carts/nonexistentid');
 
@@ -102,7 +102,7 @@ describe('Carts API', function () {
 
     // Test DELETE /api/carts/:cid endpoint
     describe('DELETE /api/carts/:cid', function () {
-        it('should allow admin user to delete a cart', async function () {
+        it('debe permitir a un premium user eliminar un cart por su id', async function () {
             const response = await adminAgent
                 .delete(`/api/carts/${cartId}`);
 

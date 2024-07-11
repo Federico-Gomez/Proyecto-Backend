@@ -51,7 +51,7 @@ describe('Products API', function () {
 
     // Test GET /api/products endpoint
     describe('GET /api/products', function () {
-        it('should get all products', function (done) {
+        it('debe devolver todos los productos', function (done) {
             requester.get('/api/products')
                 .expect('Content-Type', /json/)
                 .expect(200)
@@ -67,7 +67,7 @@ describe('Products API', function () {
 
     // Test POST /api/products endpoint
     describe('POST /api/products', () => {
-        it('should allow admin user to create a product', async () => {
+        it('debe permitir a un premium user crear un producto', async () => {
             const productData = {
                 title: 'Test Product',
                 description: 'Test Description',
@@ -100,7 +100,7 @@ describe('Products API', function () {
 
     // Test DELETE /api/products/:pid endpoint
     describe.skip('DELETE /api/products/:pid', function () {
-        it('should allow admin user to delete a product', async function () {
+        it('debe permitir a un premium user eliminar un producto', async function () {
             const response = await adminAgent
                 .delete(`/api/products/${productId}`);
 

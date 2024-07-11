@@ -43,7 +43,7 @@ describe('Sessions API', function () {
                 firstName: 'Carlos',
                 lastName: 'Kinto',
                 age: 34,
-                email: 'carloskinto2@gmail.com',
+                email: 'carloskinto3@gmail.com',
                 password: 'carlos123'
             });
 
