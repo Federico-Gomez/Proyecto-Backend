@@ -30,6 +30,7 @@ const createRouter = async () => {
             }
 
             console.log(cart);
+            
             res.render('cart', {
                 cart,
                 cartId,
@@ -41,6 +42,7 @@ const createRouter = async () => {
                 styles: ['cart.css']
             });
 
+            // Usar la response de abajo y comentar res.render para el test de Carts.test.js
             // res.status(201).json({ message: 'Cart successfully obtained', cart });
             
         } catch (error) {
