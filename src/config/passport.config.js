@@ -12,6 +12,7 @@ const initializeStrategy = () => {
     }, async (req, username, password, done) => {
 
         const { firstName, lastName, age, email } = req.body;
+        console.log('Received registration request:', req.body);
 
         try {
             const cart = await Cart.create({ products: [], text: 'New cart' });
@@ -31,6 +32,7 @@ const initializeStrategy = () => {
             }
 
             const result = await User.create(newUser);
+            console.log('User created successfully:', result);
 
             //Usuario nuevo creado exitosamente
             return done(null, result);
@@ -45,7 +47,6 @@ const initializeStrategy = () => {
     passport.use('login', new Strategy({
         usernameField: 'email'
     }, async (username, password, done) => {
-        console.log('EMIL:' + username);
         try {
             if (!username || !password) {
                 return done(null, false);

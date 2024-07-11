@@ -41,12 +41,6 @@ const DbCartDAO = require('./dao/dbDAO/dbCartDAO');
 
 const DbMessageDAO = require('./dao/dbDAO/dbMessageDAO');
 
-const app = express();
-
-// Handle the favicon.ico request
-app.get('/favicon.ico', (_, res) => res.status(204));
-app.use('/apidocs', serve, setup(specs));
-
 // Sessions
 const sessionMiddleware = require('./session/mongoStorage');
 
@@ -64,64 +58,6 @@ const { createRouter: createViewsRouter } = require('./routes/views.router');
 const { createRouter: createMessagesRouter } = require('./routes/messages.router');
 const sessionsRouter = require('./routes/session.router');
 // const petsRouter = require('./routes/pets.router');
-
-app.use(methodOverride('_method'));
-app.use(sessionMiddleware);
-app.use(cookieParser());
-app.use(configureCustomResponses);
-
-app.use(cors({
-    origin: 'http://localhost:5173',
-    credentials: true
-}));
-
-app.use(useLogger);
-
-initializeStrategy();
-initializeStrategyGitHub();
-initializeStrategyJWT();
-app.use(passport.initialize());
-app.use(passport.session());
-
-// Config de handlebars
-const handlebars = exphbs.create({
-    helpers: {
-        eq: (a, b) => a === b
-    },
-
-    runtimeOptions: {
-        allowProtoPropertiesByDefault: true,
-        allowProtoMethodsByDefault: true
-    }
-});
-
-
-app.engine('handlebars', handlebars.engine);
-app.set('views', path.join(__dirname, 'views'));
-// app.engine('handlebars', handlebars.engine());
-// app.set('views', `${__dirname}/views`);
-app.set('view engine', 'handlebars');
-
-app.use(express.static(`${__dirname}/../public`));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-app.use('/api/sessions', sessionsRouter);
-// app.use('/api/pets', petsRouter);
-
-app.use((req, res, next) => {
-    console.log('Request URL:', req.originalUrl);
-    next();
-});
-
-app.use(compression({
-    brotli: { enabled: true, zlib: {} }
-}));
-app.get('/test-br', (req, res) => {
-
-    const response = 'Hi there! This is a very long message!\n'.repeat(10000);
-    res.send(response);
-});
 
 // const httpServer = app.listen(8080, () => {
 //     console.log('Server ready!');
@@ -181,6 +117,70 @@ app.get('/test-br', (req, res) => {
 // app.set('ws', wsServer);
 
 const main = async () => {
+
+    const app = express();
+
+    // Handle the favicon.ico request
+    app.get('/favicon.ico', (_, res) => res.status(204));
+    app.use('/apidocs', serve, setup(specs));
+
+    app.use(methodOverride('_method'));
+    app.use(sessionMiddleware);
+    app.use(cookieParser());
+    app.use(configureCustomResponses);
+
+    app.use(cors({
+        origin: 'http://localhost:5173',
+        credentials: true
+    }));
+
+    app.use(useLogger);
+
+    initializeStrategy();
+    initializeStrategyGitHub();
+    initializeStrategyJWT();
+    app.use(passport.initialize());
+    app.use(passport.session());
+
+    // Config de handlebars
+    const handlebars = exphbs.create({
+        helpers: {
+            eq: (a, b) => a === b
+        },
+
+        runtimeOptions: {
+            allowProtoPropertiesByDefault: true,
+            allowProtoMethodsByDefault: true
+        }
+    });
+
+
+    app.engine('handlebars', handlebars.engine);
+    app.set('views', path.join(__dirname, 'views'));
+    // app.engine('handlebars', handlebars.engine());
+    // app.set('views', `${__dirname}/views`);
+    app.set('view engine', 'handlebars');
+
+    app.use(express.static(`${__dirname}/../public`));
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: true }));
+
+    app.use('/api/sessions', sessionsRouter);
+    // app.use('/api/pets', petsRouter);
+
+    app.use((req, res, next) => {
+        console.log('Request URL:', req.originalUrl);
+        next();
+    });
+
+    app.use(compression({
+        brotli: { enabled: true, zlib: {} }
+    }));
+    app.get('/test-br', (req, res) => {
+
+        const response = 'Hi there! This is a very long message!\n'.repeat(10000);
+        res.send(response);
+    });
 
     const viewsRouter = await createViewsRouter();
     app.use('/', viewsRouter);
@@ -299,9 +299,10 @@ const main = async () => {
     //     console.log('Server ready!');
     // });
 
+    return app;
 }
 
 main();
 
-
+module.exports = main;
 

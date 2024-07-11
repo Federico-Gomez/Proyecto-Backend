@@ -28,7 +28,7 @@ class ProductDAO {
                 throw new Error('All fields are required except thumbnails');
             }
 
-            await Product.create({
+            const newProduct = await Product.create({
                 title,
                 description,
                 price,
@@ -39,9 +39,10 @@ class ProductDAO {
                 owner
                 // id: this.productIdCounter
             })
-                .then((prod) => {
-                    logger.info("Product added succesfully:" + prod);
-                });
+
+            logger.info("Product added succesfully:" + newProduct);
+
+            return newProduct;
 
 
         } catch (error) {
@@ -64,7 +65,7 @@ class ProductDAO {
                     price: faker.commerce.price(),
                     thumbnails: faker.image.url(),
                     code: faker.string.uuid(),
-                    stock: faker.number.int({ min: 1, max: 100}),
+                    stock: faker.number.int({ min: 1, max: 100 }),
                     category: randomCategory()
                 });
 
@@ -151,8 +152,8 @@ class ProductDAO {
 
     async getProductById(id) {
         try {
-           const product = await Product.findOne({ _id: id });
-           return product.toObject({ virtuals: true });
+            const product = await Product.findOne({ _id: id });
+            return product.toObject({ virtuals: true });
         } catch (error) {
             logger.error("Error obtaining product by ID:", error);
             return null;
@@ -163,7 +164,7 @@ class ProductDAO {
         try {
             // Update the product directly in the database
             const updatedProduct = await Product.findByIdAndUpdate(id, updatedFields, { new: true });
-            
+
             if (updatedProduct) {
                 console.log("Product updated:", updatedProduct);
                 return updatedProduct.toObject();

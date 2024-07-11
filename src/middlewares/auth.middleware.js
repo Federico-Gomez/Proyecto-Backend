@@ -70,8 +70,8 @@ module.exports = {
     // Middleware para chequaer si un usuario es Admin o Premium
     isAdminOrPremium: (req, res, next) => {
         console.log(req.session)
-        console.log(req.session.user)
-        console.log(req.session.user.role)
+        console.log('isAdminOrPremium middleware:', req.session.user)
+        console.log('isAdminOrPremium middleware role:', req.session.user.role)
 
         if (req.session && req.session.user && ['admin', 'premium'].includes(req.session.user.role)) {
             return next();
@@ -90,11 +90,15 @@ module.exports = {
 
         Product.findById(productId).then((product) => {
             if (!product) {
+                console.log(`Product not found for ID: ${productId}`);
                 return res.status(404).json({ message: 'Product not found' });
             }
+            console.log('Product found:', product);
             if (product.owner === user.email || user.role === 'admin') {
+                console.log('User is owner or admin, proceeding to delete.');
                 return next();
             } else {
+                console.log('User is not owner or admin, forbidden.');
                 return res.status(403).json({ message: 'Forbidden: Owners or Admins only' });
             }
         }).catch(err => {

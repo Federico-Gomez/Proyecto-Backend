@@ -138,12 +138,21 @@ const createRouter = async () => {
 
     router.post('/', isAdminOrPremium, async (req, res, next) => {
         try {
+            console.log('Session content:', req.session);
             const { title, description, price, thumbnails, code, stock, category } = req.body;
+            console.log('Product data received:', { title, description, price, thumbnails, code, stock, category });
             const { user } = req.session;
+
+            if (!user) {
+                throw new Error('User is not authenticated');
+            }
+            console.log('User:', user);
+
             const owner = user.role === 'admin' ? 'admin' : user.email;
 
             if (!title || !description || !code || !price || isNaN(stock) || stock < 0 || !category) {
                 const errorMessage = invalidProductDataError({ title, description, price, thumbnails, code, stock, category });
+                console.log('Invalid product data error:', errorMessage);
                 return next(CustomError.createError({
                     name: 'InvalidProductDataError',
                     cause: errorMessage,
@@ -153,9 +162,10 @@ const createRouter = async () => {
             }
 
             // const productDAO = req.app.get('productDAO');
-            await productServices.addProduct(title, description, price, thumbnails, code, stock, category, owner);
-            res.status(201).json({ message: 'Product added successfully to database' });
+            const newProduct = await productServices.addProduct(title, description, price, thumbnails, code, stock, category, owner);
+            res.status(201).json({ message: 'Product added successfully to database', payload: newProduct });
         } catch (error) {
+            console.error('Error in POST /api/products:', error);
             next(CustomError.createError({
                 name: 'RoutingError',
                 cause: error.message,

@@ -458,7 +458,7 @@ const createRouter = async () => {
         }
 
         req.logger.info(`User data fetched for ${req.session.user.email}`);
-        return res.json(userDTO);
+        return res.status(200).json(userDTO);
     });
 
     router.get('/create-product', isAdminOrPremium, async (req, res) => {

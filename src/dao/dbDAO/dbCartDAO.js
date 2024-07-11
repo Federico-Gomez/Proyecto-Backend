@@ -31,7 +31,8 @@ class CartDAO {
                 products: [],
                 text: 'Text for testing update endpoints'
             });
-            return cart._id;
+            
+            return cart;
 
         } catch (error) {
             logger.error("Error creating Cart:", error);

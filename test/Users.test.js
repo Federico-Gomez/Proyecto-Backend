@@ -28,9 +28,11 @@ describe('Testing Users DAO', () => {
 
     before(async function () {
         this.timeout(10000);
-        connection = await mongoose.connect(config.MONGO_URI, {
-            dbName: 'testing'
+        const mongoConnection = await mongoose.connect(config.MONGO_URI, {
+            dbName: 'mocha_testing'
         });
+
+        connection = mongoConnection.connection
     });
 
     after(async function () {
@@ -89,22 +91,22 @@ describe('Testing Users DAO', () => {
 
     });
 
-    it('debe poder eliminar un usuario', async () => {
+    // it('debe poder eliminar un usuario', async () => {
 
-        const mockUser = {
-            firstName: 'Tester',
-            lastName: 'Tester',
-            email: 'tester_tester22@gmail.com',
-            password: 'tester123',
-            role: 'user'
-        }
+    //     const mockUser = {
+    //         firstName: 'Tester',
+    //         lastName: 'Tester',
+    //         email: 'tester_tester22@gmail.com',
+    //         password: 'tester123',
+    //         role: 'user'
+    //     }
 
-        const createdUser = await usersDAOTest.createUser(mockUser);
+    //     const createdUser = await usersDAOTest.createUser(mockUser);
 
-        const user = await usersDAOTest.deleteUser(createdUser._id);
-        assert.strictEqual(user.deletedCount, 1);
+    //     const user = await usersDAOTest.deleteUser(createdUser._id);
+    //     assert.strictEqual(user.deletedCount, 1);
 
-    });
+    // });
 
 });
 

@@ -4,7 +4,11 @@
   "description": "",
   "main": "desafio_1.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "test1": "npx mocha test/Carts.test.js",
+    "test2": "npx mocha test/Products.test.js",
+    "test3": "npx mocha test/Sessions.test.js",
+    "test4": "npx mocha test/Users.test.js"
   },
   "author": "",
   "license": "ISC",
@@ -12,7 +16,6 @@
     "@faker-js/faker": "^8.4.1",
     "artillery-plugin-metrics-by-endpoint": "^1.8.0",
     "bcrypt": "^5.1.1",
-    "chai": "^5.1.1",
     "commander": "^12.0.0",
     "connect-mongo": "^5.1.0",
     "cookie-parser": "^1.4.6",
@@ -43,6 +46,8 @@
     "zlib": "^1.0.5"
   },
   "devDependencies": {
-    "mocha": "^10.6.0"
+    "chai": "^5.1.1",
+    "mocha": "^10.6.0",
+    "supertest": "^7.0.0"
   }
 }
