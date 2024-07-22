@@ -124,6 +124,17 @@ const main = async () => {
     app.get('/favicon.ico', (_, res) => res.status(204));
     app.use('/apidocs', serve, setup(specs));
 
+    app.use((req, res, next) => {
+        console.log(`${req.method} ${req.url}`);
+        next();
+    });
+
+    // Global error handler
+    app.use((err, req, res, next) => {
+        console.error(err.stack);
+        res.status(500).json({ status: 'error', error: 'Unknown error' });
+    });
+
     app.use(methodOverride('_method'));
     app.use(sessionMiddleware);
     app.use(cookieParser());

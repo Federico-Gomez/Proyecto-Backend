@@ -1,0 +1,18 @@
+<div class="form-container">
+    <h1>Upload Documents</h1>
+    <form class="login-form" action="/api/users/{{userId}}/documents" method="POST" enctype="multipart/form-data">
+        <div>
+            <label for="profile">Profile:</label>
+            <input type="file" name="profile" id="profile" class="input-field">
+        </div>
+        <div>
+            <label for="product">Product:</label>
+            <input type="file" name="product" id="product" class="input-field" multiple>
+        </div>
+        <div>
+            <label for="document">Other Documents:</label>
+            <input type="file" name="document" id="document" class="input-field" multiple>
+        </div>
+        <button class="submit-btn" type="submit">Upload</button>
+    </form>
+</div>

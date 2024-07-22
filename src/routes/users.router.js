@@ -1,6 +1,7 @@
 const { Router } = require('express');
 const { User } = require('../dao/models');
 const { userServices } = require('../services');
+const uploader = require('../middlewares/multerUploadFile');
 
 const createRouter = async () => {
 
@@ -82,6 +83,57 @@ const createRouter = async () => {
         }
     });
 
+    router.get('/:uid/upload', async (req, res) => {
+        try {
+            const { uid } = req.params;
+
+            res.render('fileUpload', {
+                title: 'Upload documents',
+                userId: uid,
+                styles: [
+                    'fileUpload.css'
+                ]
+            });
+
+        } catch (error) {
+            req.logger.error('Error rendering upload documents view: ', error);
+            res.status(500).json({ error: 'Error rendering upload documents view' });
+        }
+    });
+
+    router.post('/:uid/documents',
+        uploader.fields([
+            { name: 'profile', maxCount: 1 },
+            { name: 'product', maxCount: 10 },
+            { name: 'document', maxCount: 10 }]),
+        async (req, res) => {
+            console.log('Upload documents endpoint hit');
+            console.log('Files:', req.files);
+            try {
+                const user = await User.findById(req.params.uid);
+                if (!user) {
+                    return res.status(404).json({ message: 'User not found' });
+                }
+
+                const documents = [
+                    ...(req.files['profile'] || []).map(file => ({ name: file.originalname, reference: file.path })),
+                    ...(req.files['product'] || []).map(file => ({ name: file.originalname, reference: file.path })),
+                    ...(req.files['document'] || []).map(file => ({ name: file.originalname, reference: file.path }))
+                ];
+                console.log("Documents to upload:", documents);
+
+                user.documents.push(...documents);
+                await user.save();
+                console.log("Documents uploaded:", user.documents);
+
+                res.status(200).json({ message: 'Documents uploaded successfully', documents });
+
+            } catch (error) {
+                req.logger.error('Error uploading documents: ', error);
+                res.status(500).json({ error: 'Error uploading documents' });
+            }
+        });
+
     router.post('/premium/:uid', async (req, res) => {
         try {
             const { uid } = req.params;
@@ -91,10 +143,22 @@ const createRouter = async () => {
                 return res.status(400).json({ message: 'User not found' });
             }
 
-            user.role = user.role === 'user' ? 'premium' : 'user';
+            if (user.role === 'user') {
+                const requiredDocuments = ['Identificacion', 'Prueba de domicilio', 'Estado de cuenta'];
+                const userDocuments = user.documents.map(doc => path.basename(doc.name, path.extname(doc.name)));
+                console.log('User documents:', userDocuments);
+                const hasAllDocuments = requiredDocuments.every(doc => userDocuments.includes(doc));
+                console.log('User documents:', hasAllDocuments);
+
+                if (!hasAllDocuments) {
+                    return res.status(404).json({ message: 'User has not completed documentation process, one or more required documents have not been correctly uploaded' })
+                }
+            }
+
+            user.role = 'premium';
             await user.save();
 
-            res.status(200).json({ message: 'User role updated', user});
+            res.status(200).json({ message: 'User role updated', user });
 
         } catch (error) {
             req.logger.error('Error changing user role: ', error);
@@ -127,6 +191,5 @@ const createRouter = async () => {
 
     return router;
 }
-
 
 module.exports = { createRouter };

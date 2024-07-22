@@ -45,6 +45,10 @@ const router = Router();
 router.post('/login', checkLoginType, passport.authenticate('login', { failureRedirect: '/api/sessions/fail_login' }), async (req, res) => {
 
     req.session.user = { email: req.user.email, _id: req.user._id.toString(), role: req.user.role };
+    console.log("Before save:", req.user.last_connection);
+    req.user.last_connection = new Date();
+    await req.user.save();
+    console.log("After save:", req.user.last_connection);
     res.redirect('/products');
 
 });
@@ -131,7 +135,14 @@ router.get('/fail_login', (_, res) => {
     res.send('Login failed');
 });
 
-router.get('/logout', (req, res) => {
+router.get('/logout', async (req, res) => {
+    if (req.user) {
+        console.log("Before save:", req.user.last_connection);
+        req.user.last_connection = new Date();
+        await req.user.save();
+        console.log("After save:", req.user.last_connection);
+    }
+
     req.session.destroy(_ => {
         res.redirect('/');
     });

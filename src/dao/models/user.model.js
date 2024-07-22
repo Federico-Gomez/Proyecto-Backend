@@ -12,7 +12,14 @@ const userSchema = new mongoose.Schema({
     },
     password: { type: String },
     role: { type: String, default: 'user'}, // Rol por defecto es 'user'
-    cartId: { type: mongoose.Schema.Types.ObjectId, ref: 'Cart' } // Reference to Cart model
+    cartId: { type: mongoose.Schema.Types.ObjectId, ref: 'Cart' }, // Referencia al Cart model
+    documents: [
+        {
+            name: { type: String },
+            reference: { type: String }
+        }
+    ],
+    last_connection: { type: Date }
 });
 
 module.exports  = mongoose.model('User', userSchema, collection);
