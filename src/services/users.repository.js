@@ -12,6 +12,14 @@ class UsersRepository {
         return this.dao.createMockUsers(n);
     }
 
+    async deleteUser(userId) {
+        return this.dao.deleteUser(userId);
+    }
+
+    async deleteInactiveUsers() {
+        return this.dao.deleteInactiveUsers();
+    }
+
 }
 
 module.exports = { UsersRepository }

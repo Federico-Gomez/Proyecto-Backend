@@ -1,6 +1,8 @@
 const { User, Cart } = require('../models');
 const { fakerES: faker } = require('@faker-js/faker');
 const { logger } = require('../../utils/logger');
+const transport = require('../../mailing/transport');
+const config = require('../../../config');
 
 class UserDAO {
 
@@ -71,7 +73,7 @@ class UserDAO {
 
     async deleteUser(userId) {
         try {
-            const userToDelete = await User.deleteOne(userId);
+            const userToDelete = await User.deleteOne({ _id: userId });
             if (userToDelete.deletedCount === 0) {
                 throw new Error('User not found');
             }
@@ -79,6 +81,44 @@ class UserDAO {
         } catch (error) {
             logger.error('Error deleting user in DAO:', error);
             throw new Error('Error deleting user: ' + error.message);
+        }
+    }
+
+    async deleteInactiveUsers() {
+        try {
+            const twoDaysAgo = new Date();
+            twoDaysAgo.setDate(twoDaysAgo.getDate() - 0.1);
+
+            const sendDeletionEmail = (userEmail) => {
+                const mailOptions = {
+                    from: config.GMAIL_ACCOUNT,
+                    to: userEmail,
+                    subject: 'Cuenta eliminada por inactividad',
+                    text: 'Tu cuenta ha sido eliminada debido a inactividad en los últimos 2 días.'
+                };
+            
+                transport.sendMail(mailOptions, (error, info) => {
+                    if (error) {
+                        console.log('Error al enviar el correo:', error);
+                    } else {
+                        console.log('Correo enviado:', info.response);
+                    }
+                });
+            };
+
+            const inactiveUsers = await User.find({ last_connection: { $lt: twoDaysAgo } });
+
+            const deletePromises = inactiveUsers.map(async (user) => {
+                await sendDeletionEmail(user.email);
+                return User.deleteOne({ _id: user._id });
+            });
+
+            const results = await Promise.all(deletePromises);
+
+            return { deletedCount: results.length };
+        } catch (error) {
+            logger.error('Error deleting inactive users in DAO:', error);
+            throw new Error('Error deleting inactive users: ' + error.message);
         }
     }
 }

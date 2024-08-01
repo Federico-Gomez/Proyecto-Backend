@@ -1,0 +1,9 @@
+<div class="form-container">
+    <h1>{{user.email}} <br> <br> Role: {{user.role}}</h1>
+    <form action="/api/users/role_switch/{{user._id}}" method="post">
+        <button class="submit-btn" type="submit">Switch to {{#if (eq user.role 'user')}}Premium{{else}}User{{/if}}</button>
+    </form>
+    <form action="/api/users/{{user._id}}?_method=DELETE" method="post">
+        <button class="submit-btn" type="submit">Delete user</button>
+    </form>
+</div>

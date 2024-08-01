@@ -1,7 +1,9 @@
 const { Router } = require('express');
 const { User } = require('../dao/models');
-const { userServices } = require('../services');
 const uploader = require('../middlewares/multerUploadFile');
+const UserDTO = require('../utils/DTOs/userDTO');
+const userController = require('../controllers/user.controller');
+const { isAdmin } = require('../middlewares/auth.middleware');
 
 const createRouter = async () => {
 
@@ -32,8 +34,8 @@ const createRouter = async () => {
 
         try {
             const users = await User.find({});
-
-            return res.json(users);
+            const usersWithDTO = users.map(u => new UserDTO(u));
+            return res.json(usersWithDTO);
         } catch (err) {
             return res.status(500).json({
                 message: err.message
@@ -42,7 +44,7 @@ const createRouter = async () => {
 
     });
 
-    router.get('/:id', async (req, res) => {
+    router.get('/:id', isAdmin, async (req, res) => {
 
         try {
             const user = await User.findOne({ _id: req.params.id });
@@ -51,7 +53,15 @@ const createRouter = async () => {
                 return res.status(404).json({ message: 'user not found' });
             }
 
-            return res.json(user);
+            res.render('manage_user', {
+                title: 'Manage User',
+                user,
+                styles: [
+                    'user-role-switch.css'
+                ]
+            });
+
+            //return res.json(user);
         } catch (err) {
             return res.status(500).json({
                 message: err.message
@@ -145,7 +155,7 @@ const createRouter = async () => {
 
             if (user.role === 'user') {
                 const requiredDocuments = ['Identificacion', 'Prueba de domicilio', 'Estado de cuenta'];
-                const userDocuments = user.documents.map(doc => path.basename(doc.name, path.extname(doc.name)));
+                const userDocuments = user.documents.map(doc => doc.name.split('.').slice(0, -1).join('.'));
                 console.log('User documents:', userDocuments);
                 const hasAllDocuments = requiredDocuments.every(doc => userDocuments.includes(doc));
                 console.log('User documents:', hasAllDocuments);
@@ -188,6 +198,31 @@ const createRouter = async () => {
             res.status(500).json({ error: 'Error rendering user role change view' });
         }
     });
+
+    router.post('/role_switch/:uid', async (req, res) => {
+        try {
+            const { uid } = req.params;
+            const user = await User.findById(uid);
+
+            if (!user) {
+                return res.status(404).json({ message: 'User not found' });
+            }
+
+            user.role = user.role === 'user' ? 'premium' : 'user';
+
+            await user.save();
+            return res.status(200).json({ message: `User role switched to ${user.role}`, user });
+
+        } catch (error) {
+            req.logger.error('Error switching user role: ', error);
+            return res.status(500).json({ error: 'Error switching user role' });
+        }
+
+    });
+
+    router.delete('/inactive', userController.deleteInactiveUsers);
+
+    router.delete('/:uid', userController.deleteUser);
 
     return router;
 }

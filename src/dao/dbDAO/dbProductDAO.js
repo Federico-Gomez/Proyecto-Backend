@@ -1,6 +1,9 @@
 const { Product } = require('../models');
+const { User } = require('../models');
 const { fakerES: faker } = require('@faker-js/faker');
 const { logger } = require('../../utils/logger');
+const transport = require('../../mailing/transport');
+const config = require('../../../config');
 
 class ProductDAO {
     #products
@@ -178,10 +181,41 @@ class ProductDAO {
 
     async deleteProduct(id) {
         try {
+            const product = await Product.findById(id);
+
+            const sendDeletionEmail = (userEmail) => {
+                const mailOptions = {
+                    from: config.GMAIL_ACCOUNT,
+                    to: userEmail,
+                    subject: 'Producto eliminado',
+                    text: `Tu producto "${product.title}" ha sido eliminado por un administrador.`
+                };
+            
+                transport.sendMail(mailOptions, (error, info) => {
+                    if (error) {
+                        console.log('Error al enviar el correo:', error);
+                    } else {
+                        console.log('Correo enviado:', info.response);
+                    }
+                });
+            };
+
+            if (!product) {
+                throw new Error('Product not found');
+            }
+
+            if (product.owner !== 'admin') {
+                const owner = await User.findOne({ email: product.owner });
+                if (owner && owner.role === 'premium') {
+                    await sendDeletionEmail(owner.email, product.title);
+                }
+            }
+
             await Product.deleteOne({ _id: id });
             logger.info("Product deleted");
         } catch (error) {
             logger.error("Error deleting product:", error);
+            throw new Error("Error deleting product: " + error.message);
         }
     }
 }

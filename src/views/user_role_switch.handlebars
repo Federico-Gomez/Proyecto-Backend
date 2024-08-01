@@ -1,5 +1,5 @@
 <div class="form-container">
-    <h1>{{user.email}} <br> Role: {{user.role}}</h1>
+    <h1>{{user.email}} <br> <br> Role: {{user.role}}</h1>
     <form action="/api/users/premium/{{user._id}}" method="post">
         <button class="submit-btn" type="submit">Switch to {{#if (eq user.role 'user')}}Premium{{else}}User{{/if}}</button>
     </form>
