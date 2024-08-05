@@ -87,7 +87,7 @@ class UserDAO {
     async deleteInactiveUsers() {
         try {
             const twoDaysAgo = new Date();
-            twoDaysAgo.setDate(twoDaysAgo.getDate() - 0.1);
+            twoDaysAgo.setMinutes(twoDaysAgo.getMinutes() - 30);
 
             const sendDeletionEmail = (userEmail) => {
                 const mailOptions = {
@@ -101,12 +101,17 @@ class UserDAO {
                     if (error) {
                         console.log('Error al enviar el correo:', error);
                     } else {
-                        console.log('Correo enviado:', info.response);
+                        console.log(`Correo enviado a ${userEmail}:`, info.response);
                     }
                 });
             };
 
             const inactiveUsers = await User.find({ last_connection: { $lt: twoDaysAgo } });
+            console.log('Inactive users found:', inactiveUsers);
+
+            if (inactiveUsers.length === 0) {
+                return null;
+            }
 
             const deletePromises = inactiveUsers.map(async (user) => {
                 await sendDeletionEmail(user.email);
@@ -114,6 +119,7 @@ class UserDAO {
             });
 
             const results = await Promise.all(deletePromises);
+            console.log('Results of deletion:', results);
 
             return { deletedCount: results.length };
         } catch (error) {

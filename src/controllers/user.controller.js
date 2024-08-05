@@ -20,11 +20,18 @@ module.exports = {
         return res.sendSuccess(userToDelete);
     },
 
-    deleteInactiveUsers: async () => {
-        const deletedInactiveUsers = await userServices.deleteInactiveUsers();
-        if (!deletedInactiveUsers) {
-            return res.sendError({ message: 'No inactive users' });
+    deleteInactiveUsers: async (req, res) => {
+        try {
+            const deletedInactiveUsers = await userServices.deleteInactiveUsers();
+            if (!deletedInactiveUsers) {
+                console.log('No inactive users to delete');
+                return res.sendError({ message: 'No inactive users' }, 404);
+            }
+            console.log('Deleted inactive users:', deletedInactiveUsers);
+            return res.sendSuccess(deletedInactiveUsers);
+        } catch (error) {
+            console.log('Error deleting inactive users:', error.message);
+            return res.sendError({ error: error.message });
         }
-        return res.sendSuccess(deletedInactiveUsers);
     }
 }
