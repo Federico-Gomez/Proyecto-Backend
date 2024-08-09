@@ -4,6 +4,8 @@
   "description": "",
   "main": "desafio_1.js",
   "scripts": {
+    "start": "node src/app.js",
+    "local": "node --env-file=.env.dev src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "test1": "npx mocha test/Carts.test.js",
     "test2": "npx mocha test/Products.test.js",
