@@ -1,14 +1,50 @@
-<div class="menu">
-    {{#if isLoggedIn}}
-    <a href="/profile" class="menu-item">My Profile</a>
-    <a href="/products" class="menu-item">Back to Store</a>
-    <a href="/api/sessions/logout" class="menu-item">Logout</a>
-    {{/if}}
+<!DOCTYPE html>
+<html lang="en">
 
-    {{#if isNotLoggedIn}}
-    <a href="/login" class="menu-item">Login</a>
-    <a href="/request_reset_password" class="menu-item" type="submit">Reset Password</a>
-    <a href="/api/sessions/github" class="menu-item">Login with GitHub</a>
-    <a href="/register" class="menu-item">Register</a>
-    {{/if}}
-</div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+        }
+    </style>
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+</head>
+
+<body>
+    <div class="menu">
+        {{#if isLoggedIn}}
+        <a href="/profile" class="menu-item">My Profile</a>
+        <a href="/products" class="menu-item">Back to Store</a>
+        <a href="/api/sessions/logout" class="menu-item">Logout</a>
+        {{/if}}
+
+        {{#if isNotLoggedIn}}
+        <a href="/login" class="menu-item">Login</a>
+        <a href="/request_reset_password" class="menu-item" type="submit">Reset Password</a>
+        <a href="/api/sessions/github" class="menu-item">Login with GitHub</a>
+        <a href="/register" class="menu-item">Register</a>
+        {{/if}}
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('registered')) {
+            Toastify({
+                text: "Registration successful!",
+                duration: 4000,
+                gravity: "top", 
+                position: "right", 
+                backgroundColor: "#555555",
+                close: true
+            }).showToast();
+        }
+    });
+</script>
+</body>

@@ -3,7 +3,7 @@
 
     {{#if isLoggedIn}}
     {{#if isAdmin}}
-    <h3>Bienvenido Admin - Username: {{email}} - Role: {{role}}</h3>
+    <h3>Welcome Admin - Username: {{email}} - Role: {{role}}</h3>
     <div class="btn-container">
         <a href="/api/sessions/logout" class="btn">Logout</a>
         <form action="/create-product" method="get">
@@ -13,7 +13,7 @@
     </div>
 
     {{else if isPremium}}
-    <h3>Bienvenido {{firstName}} {{lastName}} - Username: {{email}} - Role: {{role}} - Cart ID: {{cartId}}</h3>
+    <h3>Welcome {{firstName}} {{lastName}} - Username: {{email}} - Role: {{role}} - Cart ID: {{cartId}}</h3>
     <div class="btn-container">
         <a href="/profile" class="btn">My Profile</a>
         <a href="/api/sessions/logout" class="btn">Logout</a>
@@ -26,7 +26,7 @@
         </form>
     </div>
     {{else}}
-    <h3>Bienvenido {{firstName}} {{lastName}} - Username: ({{email}}) - Role: {{role}} - Cart ID: {{cartId}}</h3>
+    <h3>Welcome {{firstName}} {{lastName}} - Username: ({{email}}) - Role: {{role}} - Cart ID: {{cartId}}</h3>
     <div class="btn-container">
         <a href="/profile" class="btn">My Profile</a>
         <a href="/api/sessions/logout" class="btn">Logout</a>

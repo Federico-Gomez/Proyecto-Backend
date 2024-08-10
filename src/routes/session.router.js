@@ -172,7 +172,7 @@ router.get('/logout', async (req, res) => {
 
 router.post('/register', passport.authenticate('register', { failureRedirect: '/api/sessions/failregister' }), async (req, res) => {
     console.log('Usuario:', req.user);
-    res.redirect('/');
+    res.redirect('/?registered=true');
 });
 
 router.get('/failregister', (_, res) => {
