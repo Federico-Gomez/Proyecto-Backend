@@ -9,33 +9,33 @@
 </div>
 
 {{#if purchasedProducts.length}}
-    <div class="container">
-        <h2>Purchased Products</h2>
-        <ul>
+<div class="container">
+    <h2>Purchased Products</h2>
+    <ul>
         {{#each purchasedProducts}}
-            <li>
-                <p>Product ID: {{productId}}</p>
-                <p>Quantity: {{quantity}}</p>
-                <p>Name: {{name}}</p>
-            </li>
+        <li>
+            <p>Product ID: {{productId}}</p>
+            <p>Quantity: {{quantity}}</p>
+            <p>Name: {{name}}</p>
+        </li>
         {{/each}}
-        </ul>
-    </div>
+    </ul>
+</div>
 {{/if}}
 
 {{#if pendingStockProducts.length}}
-    <div class="container">
-        <h2>Out of Stock Products</h2>
-        <ul>
+<div class="container">
+    <h2>Out of Stock Products</h2>
+    <ul>
         {{#each pendingStockProducts}}
-            <li>
-                <p>Product ID: {{productId}}</p>
-                <p>Name: {{name}}</p>
-            </li>
+        <li>
+            <p>Product ID: {{productId}}</p>
+            <p>Name: {{name}}</p>
+        </li>
         {{/each}}
-        </ul>
-    </div>
-{{/if}}  
+    </ul>
+</div>
+{{/if}}
 
 {{else}}
 <h3>{{message}}</h3>

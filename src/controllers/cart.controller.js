@@ -56,6 +56,11 @@ module.exports = {
                 });
 
                 // return res.status(200).json({ status: 'success', ticket });
+            } else if (productsToPurchase.length === 0 && insufficientStockProducts.length === 0) {
+                return res.status(400).render('purchaseTicket', {
+                    success: false,
+                    message: 'No products in Cart',
+                });
             } else {
                 return res.status(400).render('purchaseTicket', {
                     success: false,
